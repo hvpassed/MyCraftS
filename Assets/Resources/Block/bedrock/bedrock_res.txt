@@ -1,0 +1,27 @@
+type: Block
+id: 5
+name: bedrock
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: bedrock.png
+    right: bedrock.png
+    top: bedrock.png
+    bottom: bedrock.png
+    front: bedrock.png
+    left: bedrock.png
+  normal:
+    back: bedrock_n.png
+    right: bedrock_n.png
+    top: bedrock_n.png
+    bottom: bedrock_n.png
+    front: bedrock_n.png
+    left: bedrock_n.png
+  specular:
+    back: bedrock_s.png
+    right: bedrock_s.png
+    top: bedrock_s.png
+    bottom: bedrock_s.png
+    front: bedrock_s.png
+    left: bedrock_s.png

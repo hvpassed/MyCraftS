@@ -1,0 +1,15 @@
+type: Block
+id: 9
+name: water
+shape: Cube
+texture:
+  size: 16
+  diffuse: &o0
+    back: water.png
+    right: water.png
+    top: water.png
+    bottom: water.png
+    front: water.png
+    left: water.png
+  normal: *o0
+  specular: *o0

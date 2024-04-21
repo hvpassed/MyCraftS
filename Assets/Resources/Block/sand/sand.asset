@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe407e4d8a5827488a1882a53113b04, type: 3}
+  m_Name: sand
+  m_EditorClassIdentifier: 
+  mc:
+    type: 0
+    id: 6
+    name: sand
+    shape: 0
+    texture:
+      size: 128
+      diffuse:
+        back: sand.png
+        right: sand.png
+        top: sand.png
+        bottom: sand.png
+        front: sand.png
+        left: sand.png
+      normal:
+        back: sand_n.png
+        right: sand_n.png
+        top: sand_n.png
+        bottom: sand_n.png
+        front: sand_n.png
+        left: sand_n.png
+      specular:
+        back: sand_n.png
+        right: sand_n.png
+        top: sand_n.png
+        bottom: sand_n.png
+        front: sand_n.png
+        left: sand_n.png
+  blockInfo:
+    blockId: 128
+    canCollide: 1
+    canBeDestroyed: 1
+    transparent: 0
+    colliderType: 0
+    hasDirect: 0
+    isLiquid: 0

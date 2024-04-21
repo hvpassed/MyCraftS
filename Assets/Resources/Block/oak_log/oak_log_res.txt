@@ -1,0 +1,27 @@
+type: Block
+id: 7
+name: oak_log
+shape: Cube
+texture:
+  size: 0
+  diffuse:
+    back: oak_log.png
+    right: oak_log.png
+    top: oak_log_top.png
+    bottom: oak_log_top.png
+    front: oak_log.png
+    left: oak_log.png
+  normal:
+    back: oak_log_n.png
+    right: oak_log_n.png
+    top: oak_log_top_n.png
+    bottom: oak_log_top_n.png
+    front: oak_log_n.png
+    left: oak_log_n.png
+  specular:
+    back: oak_log_s.png
+    right: oak_log_s.png
+    top: oak_log_top_s.png
+    bottom: oak_log_top_s.png
+    front: oak_log_s.png
+    left: oak_log_s.png

@@ -1,0 +1,27 @@
+type: Block
+id: 4
+name: cobblestone
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: cobblestone.png
+    right: cobblestone.png
+    top: cobblestone.png
+    bottom: cobblestone.png
+    front: cobblestone.png
+    left: cobblestone.png
+  normal:
+    back: cobblestone_n.png
+    right: cobblestone_n.png
+    top: cobblestone_n.png
+    bottom: cobblestone_n.png
+    front: cobblestone_n.png
+    left: cobblestone_n.png
+  specular:
+    back: cobblestone_s.png
+    right: cobblestone_s.png
+    top: cobblestone_s.png
+    bottom: cobblestone_s.png
+    front: cobblestone_s.png
+    left: cobblestone_s.png

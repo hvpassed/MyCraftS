@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe407e4d8a5827488a1882a53113b04, type: 3}
+  m_Name: cobblestone
+  m_EditorClassIdentifier: 
+  mc:
+    type: 0
+    id: 4
+    name: cobblestone
+    shape: 0
+    texture:
+      size: 128
+      diffuse:
+        back: cobblestone.png
+        right: cobblestone.png
+        top: cobblestone.png
+        bottom: cobblestone.png
+        front: cobblestone.png
+        left: cobblestone.png
+      normal:
+        back: cobblestone_n.png
+        right: cobblestone_n.png
+        top: cobblestone_n.png
+        bottom: cobblestone_n.png
+        front: cobblestone_n.png
+        left: cobblestone_n.png
+      specular:
+        back: cobblestone_s.png
+        right: cobblestone_s.png
+        top: cobblestone_s.png
+        bottom: cobblestone_s.png
+        front: cobblestone_s.png
+        left: cobblestone_s.png
+  blockInfo:
+    blockId: 4
+    canCollide: 1
+    canBeDestroyed: 1
+    transparent: 0
+    colliderType: 0
+    hasDirect: 0
+    isLiquid: 0

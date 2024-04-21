@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe407e4d8a5827488a1882a53113b04, type: 3}
+  m_Name: oak_log
+  m_EditorClassIdentifier: 
+  mc:
+    type: 0
+    id: 7
+    name: oak_log
+    shape: 0
+    texture:
+      size: 128
+      diffuse:
+        back: oak_log.png
+        right: oak_log.png
+        top: oak_log_top.png
+        bottom: oak_log_top.png
+        front: oak_log.png
+        left: oak_log.png
+      normal:
+        back: oak_log_n.png
+        right: oak_log_n.png
+        top: oak_log_top_n.png
+        bottom: oak_log_top_n.png
+        front: oak_log_n.png
+        left: oak_log_n.png
+      specular:
+        back: oak_log_s.png
+        right: oak_log_s.png
+        top: oak_log_top_s.png
+        bottom: oak_log_top_s.png
+        front: oak_log_s.png
+        left: oak_log_s.png
+  blockInfo:
+    blockId: 7
+    canCollide: 1
+    canBeDestroyed: 1
+    transparent: 0
+    colliderType: 0
+    hasDirect: 0
+    isLiquid: 0

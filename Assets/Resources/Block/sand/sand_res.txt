@@ -1,0 +1,27 @@
+type: Block
+id: 6
+name: sand
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: sand.png
+    right: sand.png
+    top: sand.png
+    bottom: sand.png
+    front: sand.png
+    left: sand.png
+  normal:
+    back: sand_n.png
+    right: sand_n.png
+    top: sand_n.png
+    bottom: sand_n.png
+    front: sand_n.png
+    left: sand_n.png
+  specular:
+    back: sand_s.png
+    right: sand_s.png
+    top: sand_s.png
+    bottom: sand_s.png
+    front: sand_s.png
+    left: sand_s.png

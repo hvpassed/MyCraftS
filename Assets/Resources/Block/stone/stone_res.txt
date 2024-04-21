@@ -1,0 +1,27 @@
+type: Block
+id: 3
+name: stone
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: stone.png
+    right: stone.png
+    top: stone.png
+    bottom: stone.png
+    front: stone.png
+    left: stone.png
+  normal:
+    back: stone_n.png
+    right: stone_n.png
+    top: stone_n.png
+    bottom: stone_n.png
+    front: stone_n.png
+    left: stone_n.png
+  specular:
+    back: stone_s.png
+    right: stone_s.png
+    top: stone_s.png
+    bottom: stone_s.png
+    front: stone_s.png
+    left: stone_s.png

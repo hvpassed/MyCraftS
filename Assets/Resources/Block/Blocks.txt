@@ -1,0 +1,10 @@
+Blocks:
+- bedrock
+- cobblestone
+- dirt
+- grass_block
+- oak_leaves
+- oak_log
+- sand
+- stone
+- water

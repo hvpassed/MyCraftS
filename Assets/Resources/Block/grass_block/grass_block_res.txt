@@ -1,0 +1,27 @@
+type: Block
+id: 2
+name: grass_block
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: grass_block_side.png
+    right: grass_block_side.png
+    top: grass_block_top.png
+    bottom: grass_block_side.png
+    front: grass_block_side.png
+    left: grass_block_side.png
+  normal:
+    back: grass_block_side_n.png
+    right: grass_block_side_n.png
+    top: grass_block_top_n.png
+    bottom: grass_block_side_n.png
+    front: grass_block_side_n.png
+    left: grass_block_side_n.png
+  specular:
+    back: grass_block_side_s.png
+    right: grass_block_side_s.png
+    top: grass_block_top_s.png
+    bottom: grass_block_side_s.png
+    front: grass_block_side_s.png
+    left: grass_block_side_s.png

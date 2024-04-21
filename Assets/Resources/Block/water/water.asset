@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe407e4d8a5827488a1882a53113b04, type: 3}
+  m_Name: water
+  m_EditorClassIdentifier: 
+  mc:
+    type: 0
+    id: 9
+    name: water
+    shape: 0
+    texture:
+      size: 16
+      diffuse:
+        back: water_side.png
+        right: water_side.png
+        top: water.png
+        bottom: water_side.png
+        front: water_side.png
+        left: water_side.png
+      normal:
+        back: water_side.png
+        right: water_side.png
+        top: water.png
+        bottom: water_side.png
+        front: water_side.png
+        left: water_side.png
+      specular:
+        back: water_side.png
+        right: water_side.png
+        top: water.png
+        bottom: water_side.png
+        front: water_side.png
+        left: water_side.png
+  blockInfo:
+    blockId: 9
+    canCollide: 0
+    canBeDestroyed: 0
+    transparent: 1
+    colliderType: 0
+    hasDirect: 1
+    isLiquid: 1

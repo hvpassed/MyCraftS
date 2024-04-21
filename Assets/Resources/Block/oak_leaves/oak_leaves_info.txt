@@ -1,0 +1,7 @@
+blockId: 8
+canCollide: true
+canBeDestroyed: true
+transparent: true
+colliderType: StanderdBlock
+hasDirect: false
+isLiquid: false

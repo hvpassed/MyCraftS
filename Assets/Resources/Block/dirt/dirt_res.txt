@@ -1,0 +1,27 @@
+type: Block
+id: 1
+name: dirt
+shape: Cube
+texture:
+  size: 128
+  diffuse:
+    back: dirt.png
+    right: dirt.png
+    top: dirt.png
+    bottom: dirt.png
+    front: dirt.png
+    left: dirt.png
+  normal:
+    back: dirt_n.png
+    right: dirt_n.png
+    top: dirt_n.png
+    bottom: dirt_n.png
+    front: dirt_n.png
+    left: dirt_n.png
+  specular:
+    back: dirt_s.png
+    right: dirt_s.png
+    top: dirt_s.png
+    bottom: dirt_s.png
+    front: dirt_s.png
+    left: dirt_s.png
