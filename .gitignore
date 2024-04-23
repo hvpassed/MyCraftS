@@ -38,7 +38,8 @@ artifacts/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
-
+*.cs.meta
+*.meta
 # Builds
 *.apk
 *.aab
@@ -63,3 +64,4 @@ Thumbs.db
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/**/addressables_content_state.bin
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/SceneDependencyCache
