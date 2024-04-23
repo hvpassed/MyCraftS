@@ -24,6 +24,9 @@ public class MCResouceObjectProcess:Editor
         {
             script.Process();
         }
+        if (GUILayout.Button("ProcessSaving")){
+            script.ProcessSaving();
+        }
     }
 
  

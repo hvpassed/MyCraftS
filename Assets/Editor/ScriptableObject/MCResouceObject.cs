@@ -1,7 +1,7 @@
-
+#if UNITY_EDITOR
 using Importer.Data;
 using Importer.Meta;
-
+using MyCraftS.Initializer.Creator;
 using System.Drawing;
 using System.IO;
 using UnityEditor;
@@ -36,7 +36,7 @@ public class MCResouceObject : ScriptableObject
     public void ProcessTexture()
     {
         var trueDir = getCurrntDir();
-        CreateMaterialDir(trueDir);
+        CreateDir(trueDir, "Materials");
         size = mc.texture.size;
         var diffpath = Path.Combine(trueDir, "diffuse.png");
         var normpath = Path.Combine(trueDir, "normal.png");
@@ -66,18 +66,55 @@ public class MCResouceObject : ScriptableObject
         Debug.Log("MCResouceObject:Process Done");
     }
 
+    public void ProcessSaving()
+    {
+        var serializer = new SerializerBuilder()
+        .WithNamingConvention(NullNamingConvention.Instance)
+        .Build();
+        var name = mc.name;
+        var mcYaml = serializer.Serialize(mc, typeof(MC));
+        var blockInfoYaml = serializer.Serialize(blockInfo, typeof(BlockInfo));
+        Material material = Resources.Load<Material>(Path.Combine(getResourcesPath(), "Materials", mc.name)) as Material;
+        Mesh mesh = Resources.Load<Mesh>(Path.Combine("Mesh", "BlockMesh")) as Mesh;
+        if (material == null)
+        {
+            Debug.LogWarning("Missing Material: " + mc.name);
+            Debug.LogWarning(Path.Combine(getResourcesPath(), "Materials", mc.name));
+            return;
+        }
+        if (mesh == null)
+        {
+            Debug.LogWarning("Missing Mesh: " + mc.name);
+            Debug.LogWarning(Path.Combine("Mesh", "BlockMesh"));
+            return;
+        }
+        var savepath = Path.Combine(getCurrntDir(), "Prefab");
+        Debug.Log(savepath);
+        if (!Directory.Exists(savepath))
+        {
+            Directory.CreateDirectory(savepath);
+        }
+        AssetDatabase.Refresh();
+        GameObject go = BlockCreator.Instance.CreateObjectTemplate(mc.name, material, mc.id, blockInfo.transparent,mesh);
+        var path = Path.Combine(getCurrntDir(), "Prefab",$"{mc.name}.prefab");
+        Debug.Log(path);
+        PrefabUtility.SaveAsPrefabAsset(go, path);
+    }
     private string getCurrntDir()
     {
         string fullPath = AssetDatabase.GetAssetPath(this);
         return Path.GetDirectoryName(fullPath);
     }
 
-
-
-
-    private void CreateMaterialDir(string dir)
+    private string getResourcesPath()
     {
-        string path = Path.Combine(dir, "Materials");
+        return getCurrntDir().Replace(@"Assets\Resources\", "");
+    }
+
+
+    private void CreateDir(string dir,string dirname)
+    {
+        string path = Path.Combine(dir, dirname);
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);
@@ -150,3 +187,4 @@ public class MCResouceObject : ScriptableObject
 
     }
 }
+#endif
