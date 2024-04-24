@@ -59,6 +59,7 @@ namespace MyCraftS.Chunk
         private DynamicBuffer<ChunkHeightMap> chunkHeightMap;
         Entity entity;
         private EntityQuery _query;
+        private int count;
         private void OnCreate(ref SystemState state)
         {
             chunkIdCount = 0;
@@ -69,6 +70,7 @@ namespace MyCraftS.Chunk
                 .WithAll<ChunkLoaded>()
                 .WithAll<ChunkNotLoaded>()
                 .Build(ref state);
+            count = 0;
         }
         
         private void OnUpdate(ref SystemState state)
@@ -104,7 +106,8 @@ namespace MyCraftS.Chunk
 
         private void ProcessCompletedJob(ref SystemState state)
         {
-            
+            count++;
+            Debug.Log($"Have processd:{count}");
             int ind = ChunkDataContainer.Allocate(chunkIdCount);
             NativeSlice<int> chunkBlocksData = ChunkDataContainer.Slice(ind);
             if (checkSafety(generateChunk.blockinfo, chunkBlocksData))
@@ -185,6 +188,7 @@ namespace MyCraftS.Chunk
             {
                 id = chunkIdCount
             });
+            state.EntityManager.AddComponentData(entity, new ChunkType());
             chunkIdCount++;
             chunkHeightMap = state.EntityManager.AddBuffer<ChunkHeightMap>(entity);
             chunkHeightMap.Resize(TerrianConfig.ChunkSize * TerrianConfig.ChunkSize,NativeArrayOptions.ClearMemory);

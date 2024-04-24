@@ -1,40 +1,123 @@
 ﻿ 
 
+using MyCraftS.Block;
+using MyCraftS.Block.Utils;
 using MyCraftS.Config;
+using MyCraftS.Data.IO;
+using Test;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Rendering;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace MyCraftS.Chunk
 {
-    [BurstCompile]
+ 
     public  struct CreateBlockEntity:IJobParallelFor
     {
-        [ReadOnly] public NativeSlice<int> _blocks;
+        [ReadOnly] public NativeArray<int> _blocks;
         [ReadOnly] public NativeArray<int> _heightMap;
         [ReadOnly] public int3 _chunkCoord;
         [ReadOnly] public int _chunkId;
         [ReadOnly] public int _chunkBufferIndex;
         public EntityCommandBuffer.ParallelWriter _entityCommandBuffer;
-        
-        
-    /// <summary>
-    /// 创建每个方块的实体
-    /// </summary>
-    /// <param name="index"></param>
-    /// <exception cref="NotImplementedException"></exception>
+        [ReadOnly]
+        public NativeArray<int3> _DeltaPos;
+        [ReadOnly]
+        public NativeHashMap<int, Entity> _blockIdToEntityLookUp;
+        // ReSharper disable once InvalidXmlDocComment
+        /// <summary>
+        /// 创建每个方块的实体
+        /// </summary>
+        /// <param name="index"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public void Execute(int index)
         {
-             
+
+            int startIndex = index * TerrianConfig.ChunkSize;
+            for (int y = startIndex; y < (startIndex + TerrianConfig.ChunkSize) && y < TerrianConfig.MaxHeight; y++)
+            {
+                for (int x = 0; x < TerrianConfig.ChunkSize; x++)
+                {
+                    for (int z = 0; z < TerrianConfig.ChunkSize; z++)
+                    {
+                        if (y > _heightMap[ChunkDataHelper.IndexGetterXZ(x, z)])
+                        {
+                            continue;
+                        }
+
+                        bool canShow = false;
+                        int3 curPos = new int3(x, y, z);
+                        int blockIndex = ChunkDataHelper.IndexGetter(x, y, z);
+                        int selfId = _blocks[blockIndex];
+                        if (selfId == 0)
+                        {
+                            continue;
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            int3 checkPos= curPos+_DeltaPos[i];
+                            int otherId = GetOtherBlockID(checkPos);
+                            if(!BlockHelper.CanBlockByOther(selfId,otherId))
+                            {
+                                canShow = true;
+                                break;
+                            }
+                        }
+
+
+                        var entity = _entityCommandBuffer.Instantiate(0, _blockIdToEntityLookUp[selfId]);
+                        if (!canShow)
+                        {
+                            _entityCommandBuffer.AddComponent<DisableRendering>(1, entity,
+                                new DisableRendering());
+                        }
+                        else
+                        {
+                            _entityCommandBuffer.AddComponent<TestIF>(2,entity,new TestIF());
+                        }
+
+                        _entityCommandBuffer.SetComponent(3, entity,  LocalTransform.FromMatrix(float4x4.TRS(
+                            new float3(_chunkCoord.x+x,y,_chunkCoord.z+z),quaternion.identity, new float3(1,1,1)
+                            )));
+                        _entityCommandBuffer.RemoveComponent<BlockPrefabType>(3, entity);
+                    }
+                }
+            }
+            
+            
         }
+
+ 
+
+        public int GetOtherBlockID(int3 other)
+        {
+            if(other.y>=TerrianConfig.MaxHeight||other.y<0 || 
+               other.x<0||other.x>=TerrianConfig.ChunkSize||
+               other.z<0||other.z>=TerrianConfig.ChunkSize)
+                return 0 ;
+            else
+            {
+                int index =ChunkDataHelper.IndexGetter(other.x,other.y,other.z);
+                if (_blocks[index] < 0)
+                {
+ 
+                    return 0;
+                }
+
+                return _blocks[index];
+            }
+        }
+    
+ 
     }
 
-
     
-    [RequireMatchingQueriesForUpdate]
+    //[RequireMatchingQueriesForUpdate]
     [UpdateInGroup(typeof(ChunkSystemGroup),OrderLast = true)]
     public partial struct ChunkInitializeRenderSystem : ISystem
     {
@@ -44,6 +127,8 @@ namespace MyCraftS.Chunk
         private EntityCommandBuffer _entityCommandBuffer;
         private CreateBlockEntity _lastJobStruct;
         private ComponentType _ChunkInitializeRenderTag;
+        private NativeArray<int3> _deltaPos;
+
  
         private void OnCreate(ref SystemState state)
         {
@@ -55,10 +140,18 @@ namespace MyCraftS.Chunk
                 .WithAll<ChunkInitializeRenderTag>()
                 .Build(ref state);
             _ChunkInitializeRenderTag = typeof(ChunkInitializeRenderTag);
+            _deltaPos = new NativeArray<int3>(6, Allocator.Persistent);
+            _deltaPos[0] = new int3(1, 0, 0);
+            _deltaPos[1] = new int3(-1, 0, 0);
+            _deltaPos[2] = new int3(0, 1, 0);
+            _deltaPos[3] = new int3(0, -1, 0);
+            _deltaPos[4] = new int3(0, 0, 1);
+            _deltaPos[5] = new int3(0, 0, -1);
+            _isGenerating = 0;
         }
 
 
-        [BurstCompile]
+        //[BurstCompile]
         private void OnUpdate(ref SystemState state)
         {
             if(CheckJobCompletion(ref state))
@@ -71,16 +164,21 @@ namespace MyCraftS.Chunk
         {
             var chunkEntitys = _query.ToEntityListAsync(Allocator.TempJob,out JobHandle getJob);
             getJob.Complete();
-            
-            var chunkEntity = chunkEntitys[0];
-            chunkEntitys.Dispose();
-            if (chunkEntity==Entity.Null)
+            if (_query.CalculateEntityCount() == 0)
             {
                 return;
             }
+            var chunkEntity = chunkEntitys[0];
+            chunkEntitys.Dispose();
+ 
 
             _entityCommandBuffer = new EntityCommandBuffer(Allocator.Persistent);
             ChunkBlocks chunkBlocks = state.EntityManager.GetComponentData<ChunkBlocks>(chunkEntity);
+            NativeArray<int> blocks = new NativeArray<int>(chunkBlocks.blocks.Length, Allocator.TempJob);
+            for(int i = 0;i<chunkBlocks.blocks.Length;i++)
+            {
+                blocks[i] = chunkBlocks.blocks[i];
+            }
             ChunkCoord chunkCoord = state.EntityManager.GetComponentData<ChunkCoord>(chunkEntity);
             DynamicBuffer<ChunkHeightMap> chunkHeightMap = state.EntityManager.GetBuffer<ChunkHeightMap>(chunkEntity);
             ChunkID chunkId = state.EntityManager.GetComponentData<ChunkID>(chunkEntity);
@@ -89,17 +187,27 @@ namespace MyCraftS.Chunk
             {
                 hm[i] = chunkHeightMap[i].height;
             }
+
+            NativeHashMap<int,Entity> lookUp = new NativeHashMap<int, Entity>(BlockDataManager.BlockIdToEntityLookUp.Count,Allocator.TempJob);
+            var enumtor = BlockDataManager.BlockIdToEntityLookUp.GetEnumerator();
+            while (enumtor.MoveNext())
+            {
+                lookUp.Add(enumtor.Current.Key,enumtor.Current.Value);
+            }
             _lastJobStruct = new CreateBlockEntity()
             {
-                _blocks = chunkBlocks.blocks,
+                _blocks = blocks,
                 _heightMap =  hm,
                 _chunkCoord = chunkCoord.chunkCoord,
                 _chunkId = chunkId.id,
                 _chunkBufferIndex = chunkBlocks.bufferIndex,
-                _entityCommandBuffer = _entityCommandBuffer.AsParallelWriter()
+                _entityCommandBuffer = _entityCommandBuffer.AsParallelWriter(),
+                _DeltaPos = _deltaPos,
+                _blockIdToEntityLookUp = lookUp
             };
             
-            _lastJobHandle = _lastJobStruct.Schedule(chunkBlocks.blocks.Length, 1);
+            _lastJobHandle = _lastJobStruct.Schedule(TerrianConfig.MaxHeight/TerrianConfig.ChunkSize+1, 1);
+
             _isGenerating = 1;
             state.EntityManager.RemoveComponent(chunkEntity, _ChunkInitializeRenderTag);
         }
@@ -125,14 +233,21 @@ namespace MyCraftS.Chunk
             _isGenerating = 0;
             _lastJobHandle.Complete();
             Debug.Log($"Chunk Initialize Render System:Complete Render Chunk {_lastJobStruct._chunkCoord}");
-            
+ 
             
             
             _entityCommandBuffer.Playback(state.EntityManager);
             _entityCommandBuffer.Dispose();
             _lastJobStruct._heightMap.Dispose();
+            _lastJobStruct._blocks.Dispose();
             //处理上次的数据
+            _lastJobStruct._blockIdToEntityLookUp.Dispose();
             return true;
+        }
+        [BurstCompile]
+        private void OnDestroy()
+        {
+            _deltaPos.Dispose();
         }
     }
 }

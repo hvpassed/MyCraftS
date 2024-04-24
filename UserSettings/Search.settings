@@ -11,6 +11,9 @@ scopes = {
 	"last_search.7B5C2356" = ""
 	"OpenInspectorPreview.7B5C2356" = "0"
 	"currentGroup.7B5C2356" = "all"
+	"last_search.FD7A1EDD" = "ref=\"Assets/Resources/Block/bedrock/Prefab/bedrock.prefab\""
+	"OpenInspectorPreview.FD7A1EDD" = "0"
+	"currentGroup.FD7A1EDD" = "all"
 }
 providers = {
 	archetype = {

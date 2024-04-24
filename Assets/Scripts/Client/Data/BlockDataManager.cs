@@ -6,34 +6,34 @@ using UnityEngine;
 namespace MyCraftS.Data.IO
 {
     /// <summary>
-    /// 查询方块信息
+    /// 鏌ヨ鏂瑰潡淇℃伅
     /// </summary>
-    public class BlockDataManager : Singleton<BlockDataManager>
+    public static class BlockDataManager 
     {
         /// <summary>
-        /// 名称到唯一ID
+        /// 鍚嶇О鍒板敮涓�ID
         /// </summary>
-        public   NativeHashMap<FixedString512Bytes, int> BlockIDLookUp;
+        public static  NativeHashMap<FixedString512Bytes, int> BlockIDLookUp;
 
-        public   Dictionary<int, GameObject> BlockPrefabLookUp;
+        //public static   Dictionary<int, GameObject> BlockPrefabLookUp;
 
-        public   NativeHashMap<int, BlockInfo> BlockIDToInfoLookUp;
+        public  static NativeHashMap<int, BlockInfo> BlockIDToInfoLookUp;
 
-        public   NativeHashMap<FixedString512Bytes, BlockInfo> BlockNameToInfoLookUp;
-
-
-        public NativeHashMap<int, Entity> BlockIdToEntityLookUp;
+        public  static NativeHashMap<FixedString512Bytes, BlockInfo> BlockNameToInfoLookUp;
 
 
-        public void Init(int blockCount)
+        public static NativeHashMap<int, Entity> BlockIdToEntityLookUp;
+
+
+        public static void Init(int blockCount)
         {
             BlockIDLookUp = new NativeHashMap<FixedString512Bytes, int>(blockCount, Allocator.Persistent);
             BlockIDToInfoLookUp = new NativeHashMap<int, BlockInfo>(blockCount, Allocator.Persistent);
             BlockNameToInfoLookUp = new NativeHashMap<FixedString512Bytes, BlockInfo>(blockCount, Allocator.Persistent);
             BlockIdToEntityLookUp = new NativeHashMap<int, Entity>(blockCount, Allocator.Persistent);
-            BlockPrefabLookUp = new Dictionary<int, GameObject>(blockCount);
+            //BlockPrefabLookUp = new Dictionary<int, GameObject>(blockCount);
         }
-        public void Clear()
+        public static void Clear()
         {
             BlockIDLookUp.Dispose();
             BlockIDToInfoLookUp.Dispose();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 /// <summary>
-/// ´´½¨Õı·½Ìå·½¿éÄ£°æµÄÀà
+/// åˆ›å»ºæ­£æ–¹ä½“æ–¹å—æ¨¡ç‰ˆçš„ç±»
 /// </summary>
 namespace MyCraftS.Initializer.Creator
 {
@@ -41,33 +41,33 @@ namespace MyCraftS.Initializer.Creator
             cubeParent = new GameObject("CubeParent");
             VertexList = new List<Vector3>
         {
-            new Vector3(0,0,0),//ºó z½ÏĞ¡
+            new Vector3(0,0,0),//å zè¾ƒå°
             new Vector3(0,1,0),
             new Vector3(1,1,0),
             new Vector3(1,0,0),
 
 
-            new Vector3(1,0,0),//ÓÒ
+            new Vector3(1,0,0),//å³
             new Vector3(1,1,0),
             new Vector3(1,1,1),
             new Vector3(1,0,1),
 
-            new Vector3(0,1,0),//¶¥
+            new Vector3(0,1,0),//é¡¶
             new Vector3(0,1,1),
             new Vector3(1,1,1),
             new Vector3(1,1,0),
 
-            new Vector3(0,0,0),//µ×
+            new Vector3(0,0,0),//åº•
             new Vector3(1,0,0),
             new Vector3(1,0,1),
             new Vector3(0,0,1),
 
-            new Vector3(0,0,1),//Ç°
+            new Vector3(0,0,1),//å‰
             new Vector3(1,0,1),
             new Vector3(1,1,1),
             new Vector3(0,1,1),
 
-            new Vector3(0,0,0),//×ó
+            new Vector3(0,0,0),//å·¦
             new Vector3(0,0,1),
             new Vector3(0,1,1),
             new Vector3(0,1,0),
@@ -75,22 +75,22 @@ namespace MyCraftS.Initializer.Creator
 
             Index = new List<int>
         {
-            0,1,2,//ºó
+            0,1,2,//å
             0,2,3,
 
-            4,5,6,//ÓÒ
+            4,5,6,//å³
             4,6,7,
 
-            8,9,10,//¶¥
+            8,9,10,//é¡¶
             8,10,11,
 
-            12,13,14,//µ×
+            12,13,14,//åº•
             12,14,15,
 
-            16,17,18,//Ç°
+            16,17,18,//å‰
             16,18,19,
 
-            20,21,22,//×ó
+            20,21,22,//å·¦
             20,22,23
         };
 
@@ -157,7 +157,7 @@ namespace MyCraftS.Initializer.Creator
 
             return block;
         }
-
+#if UNITY_EDITOR
         public void SaveMeshAsset(Mesh mesh, string name)
         {
             string path = $"Assets/Resources/Mesh/{name}.asset";
@@ -167,6 +167,7 @@ namespace MyCraftS.Initializer.Creator
             AssetDatabase.SaveAssets();
             Debug.Log($"Mesh saved: {path}");
         }
+#endif
         Mesh DrawCube()
         {
             Mesh mesh = new Mesh();

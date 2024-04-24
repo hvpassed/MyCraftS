@@ -1,4 +1,5 @@
 ﻿
+using MyCraftS.Block;
 using MyCraftS.Bridge;
 using MyCraftS.Chunk.Manage;
 using MyCraftS.Data.IO;
@@ -21,15 +22,18 @@ namespace MyCraftS.Initializer
     {
         public static Entity[] constuctEntity;
         private int loaded = 0;
-        public BlockEntityGetSystem()
-        {
-           
-        }
+        public static BlockEntityGetSystem blockEntityGetSystem;
+ 
 
+        protected override void OnCreate()
+        {
+            blockEntityGetSystem = this;
+            this.Enabled = false;
+        }
 
         protected  override void OnUpdate()
         {
-            
+
             int id = 1;
             if (constuctEntity == null)
             {
@@ -43,13 +47,17 @@ namespace MyCraftS.Initializer
                 if (isLoaded)//如果加载完成
                 {
                     
-                    if (!BlockDataManager.Instance.BlockIdToEntityLookUp.ContainsKey(id))//如果没有加载过
+                    if (!BlockDataManager.BlockIdToEntityLookUp.ContainsKey(id))//如果没有加载过
                     {
                         Debug.Log($"Block Entity Get System:{id} Loaded");
                         var et = EntityManager.GetComponentData<PrefabLoadResult>(entity).PrefabRoot;
+                        //EntityManager.Instantiate(et);
+                        EntityManager.AddComponentData(et, new BlockType());
+                        EntityManager.AddComponentData(et, new BlockPrefabType());
                         EntityManager.RemoveComponent<PhysicsCollider>(et);
-
-                        BlockDataManager.Instance.BlockIdToEntityLookUp.Add(id, et);
+                        EntityManager.RemoveComponent<PrefabLoadResult>(et);
+                        EntityManager.RemoveComponent<RequestEntityPrefabLoaded>(et);
+                        BlockDataManager.BlockIdToEntityLookUp.Add(id, et);
                         loaded++;
                     }
                     

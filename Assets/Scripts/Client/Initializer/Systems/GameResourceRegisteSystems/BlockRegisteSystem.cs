@@ -1,5 +1,7 @@
  
 using System.IO;
+using MyCraftS.Bake.Baker;
+using MyCraftS.Block;
 using Unity.Entities;
 using UnityEngine;
 using YamlDotNet.Serialization;
@@ -9,6 +11,9 @@ using MyCraftS.Initializer.Creator;
 using Unity.Scenes;
 using Unity.Entities.Serialization;
 using MyCraftS.Data.IO;
+using Unity.Collections;
+using UnityEditor;
+using Hash128 = Unity.Entities.Hash128;
 
 
 namespace MyCraftS.Initializer
@@ -21,6 +26,7 @@ namespace MyCraftS.Initializer
  
         private float timer = 0f;
         private int loaded = 0;
+        private EntityQuery query;
         public BlockRegisteSystem()
         {
              
@@ -31,69 +37,79 @@ namespace MyCraftS.Initializer
         protected override void OnCreate()
         {
 
-
-            Debug.Log("Creating Block Prfab");
-            var deserializer = new DeserializerBuilder().WithNamingConvention(NullNamingConvention.Instance)
-            .Build();       // .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            string rootPath = "Block";
-            TextAsset filenameRecord = Resources.Load<TextAsset>("Block/Blocks");
-
-
-            BlocksFileName blocksFileName = deserializer.Deserialize< BlocksFileName>(filenameRecord.text);
-
-            BlockCreator blockCreator = BlockCreator.GetInstance();
-            //blockCreator.cubeDict = new Dictionary<int, GameObject>();
-
-            var cubeNum = blocksFileName.Blocks.Count;
-            BlockEntityGetSystem.constuctEntity = new Entity[cubeNum];
- 
-            BlockDataManager.Instance.Init(cubeNum);
-            int count = 0;
-
-            foreach (var dirName in blocksFileName.Blocks)
-            {
-
-
-
-                string curPath = Path.Combine(rootPath, dirName);
-                string filename = $"{dirName}_res";
-                string blockInfoFileName = $"{dirName}_info";
-                TextAsset textAsset = Resources.Load<TextAsset>(Path.Combine(curPath, filename));
-                TextAsset blockInfoAsset = Resources.Load<TextAsset>(Path.Combine(curPath, blockInfoFileName));
-                MCForYaml mc = deserializer.Deserialize<MCForYaml>(textAsset.text);
-                BlockInfoForYaml blockInfo = deserializer.Deserialize<BlockInfoForYaml>(blockInfoAsset.text);
-                string blockName = $"MyCraftS:{mc.name}";
-                
-                //Material material = Resources.Load(Path.Combine(curPath, "Materials", mc.name.ToString())) as Material;
-
-                BlockDataManager.Instance.BlockIDToInfoLookUp.Add(mc.id, BlockInfoCreator.createBlockInfo(blockInfo));
-                BlockDataManager.Instance.BlockIDLookUp.Add(blockName,mc.id);
-                BlockDataManager.Instance.BlockNameToInfoLookUp.Add(blockName, BlockInfoCreator.createBlockInfo(blockInfo));
-
-                //var go = BlockCreator.Instance.CreateObjectTemplate(mc.name.ToString(), material, mc.id, blockInfo.transparent);
-                GameObject go = Resources.Load<GameObject>(Path.Combine(rootPath,mc.name,"Prefab",mc.name));
-                BlockDataManager.Instance.BlockPrefabLookUp.Add(mc.id, go);
-                BlockEntityGetSystem.constuctEntity[mc.id-1] = EntityManager.CreateEntity();
-                EntityManager.AddComponentData<RequestEntityPrefabLoaded>(BlockEntityGetSystem.constuctEntity[mc.id - 1], new RequestEntityPrefabLoaded { 
-                    Prefab = new EntityPrefabReference(go)
- 
-                });
-
-
-
-                count++;
+            query = new EntityQueryBuilder(Allocator.Temp)
+                .WithAll<BlockEntityPrefab>()
+                .WithAll<BlockID>()
+                .Build(this);
             }
 
-             
 
 
-
-                
-        }
+    
 
         protected override void OnUpdate()
         {
-             
+            if (query.CalculateEntityCount() != 0)
+            {
+                Debug.Log($"Block Registe System:Find {query.CalculateEntityCount()} Block Prefab To register");
+                NativeArray<Entity> entityPrefabOwnerList = query.ToEntityArray(Allocator.Temp);                
+                BlockEntityGetSystem.constuctEntity = new Entity[entityPrefabOwnerList.Length];
+                var deserializer = new DeserializerBuilder().WithNamingConvention(NullNamingConvention.Instance)
+                .Build();
+                string rootSource = "Block";
+                BlockDataManager.Init(entityPrefabOwnerList.Length);
+                BlocksFileName blocksFileName = deserializer.Deserialize<BlocksFileName>(
+                    Resources.Load<TextAsset>(Path.Combine(rootSource, "Blocks")).text);
+
+                foreach (string blockDirName in blocksFileName.Blocks)
+                {
+                    string blockPath = Path.Combine(rootSource, blockDirName);
+                    string blockInfoFileName = $"{blockDirName}_info";
+                    string blockResFileName = $"{blockDirName}_res";
+                    BlockInfoForYaml blockInfo = deserializer.Deserialize<BlockInfoForYaml>(
+                        Resources.Load<TextAsset>(Path.Combine(blockPath, blockInfoFileName)).text);
+                    MCForYaml mc = deserializer.Deserialize<MCForYaml>(
+                        Resources.Load<TextAsset>(Path.Combine(blockPath, blockResFileName)).text);
+                    RegisterToBlockDataManager(mc,blockInfo);
+                    int blockID = mc.id;
+                    Entity current = GetPrefabEntity(entityPrefabOwnerList, blockID);
+                    BlockEntityPrefab blockEntityPrefab = EntityManager.GetComponentData<BlockEntityPrefab>(current);
+                    BlockEntityGetSystem.constuctEntity[blockID - 1] = EntityManager.CreateEntity();
+                    Debug.Log($"Block Registe System: Registed Block {blockID},Waiting for Prefab Loaded");
+                    EntityManager.AddComponentData<RequestEntityPrefabLoaded>(BlockEntityGetSystem.constuctEntity[blockID - 1],
+                        new RequestEntityPrefabLoaded
+                    {
+                        Prefab = blockEntityPrefab.Prefab
+                    });
+                }
+                Debug.Log("Block Registe System:Closed");
+                BlockEntityGetSystem.blockEntityGetSystem.Enabled = true;
+                Debug.Log("Block Registe System:Enable Block Entity Get System");
+                this.Enabled = false;
+            }
+        }
+
+
+        private Entity GetPrefabEntity(NativeArray<Entity> entitylist, int id)
+        {
+            foreach (var entity in entitylist)
+            {
+                BlockID blockID = EntityManager.GetComponentData<BlockID>(entity);
+                if (blockID.Id == id)
+                {
+                    return entity;
+                }
+            }
+
+            return Entity.Null;
+        }
+
+
+        private void RegisterToBlockDataManager(MCForYaml mc,BlockInfoForYaml blockinfo)
+        {
+            BlockDataManager.BlockIDLookUp.Add($"MyCraftS:{mc.name}",mc.id);
+            BlockDataManager.BlockNameToInfoLookUp.Add($"MyCraftS:{mc.name}",BlockInfoCreator.createBlockInfo(blockinfo));
+            BlockDataManager.BlockIDToInfoLookUp.Add(mc.id,BlockInfoCreator.createBlockInfo(blockinfo));
         }
     }
 }

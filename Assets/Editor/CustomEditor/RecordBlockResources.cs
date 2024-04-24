@@ -32,4 +32,11 @@ public class RecordBlockResources:Editor
 
 
     }
+    [MenuItem("MC/Get GUID")]
+    public static void showGUID()
+    {
+
+        string guid = AssetDatabase.AssetPathToGUID("Assets/Resources/Block/bedrock/Prefab/bedrock.prefab");
+        Debug.Log("GUID: " + guid);
+    }
 }
