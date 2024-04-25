@@ -71,7 +71,7 @@ namespace MyCraftS.Chunk.Data
         {
             if(ChunkCoordToIndex.TryGetValue(ChunkPos,out int index))
             {
-                return index*ChunkDataHelper.IndexGetter(LocalPos.x,LocalPos.y,LocalPos.z);
+                return index*ChunkSize+ChunkDataHelper.IndexGetter(LocalPos.x,LocalPos.y,LocalPos.z);
             }
             else
             {

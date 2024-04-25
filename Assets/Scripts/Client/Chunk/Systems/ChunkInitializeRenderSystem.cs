@@ -1,9 +1,11 @@
 ﻿ 
 
+using Client.SystemManage;
 using MyCraftS.Block;
 using MyCraftS.Block.Utils;
 using MyCraftS.Config;
 using MyCraftS.Data.IO;
+using MyCraftS.Setting;
 using Test;
 using Unity.Burst;
 using Unity.Collections;
@@ -13,6 +15,7 @@ using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace MyCraftS.Chunk
 {
@@ -29,6 +32,10 @@ namespace MyCraftS.Chunk
         public NativeArray<int3> _DeltaPos;
         [ReadOnly]
         public NativeHashMap<int, Entity> _blockIdToEntityLookUp;
+
+        
+        
+        
         // ReSharper disable once InvalidXmlDocComment
         /// <summary>
         /// 创建每个方块的实体
@@ -37,7 +44,12 @@ namespace MyCraftS.Chunk
         /// <exception cref="NotImplementedException"></exception>
         public void Execute(int index)
         {
-
+            BlockBelongToChunk blockBelongToChunk = new BlockBelongToChunk()
+            {
+                ChunkId = _chunkId,
+                ChunkCoord = _chunkCoord,
+                ChunkBufferIndex = _chunkBufferIndex
+            };
             int startIndex = index * TerrianConfig.ChunkSize;
             for (int y = startIndex; y < (startIndex + TerrianConfig.ChunkSize) && y < TerrianConfig.MaxHeight; y++)
             {
@@ -73,18 +85,20 @@ namespace MyCraftS.Chunk
                         var entity = _entityCommandBuffer.Instantiate(0, _blockIdToEntityLookUp[selfId]);
                         if (!canShow)
                         {
-                            _entityCommandBuffer.AddComponent<DisableRendering>(1, entity,
-                                new DisableRendering());
+                            //_entityCommandBuffer.SetComponent();
+                            
                         }
                         else
                         {
-                            _entityCommandBuffer.AddComponent<TestIF>(2,entity,new TestIF());
+                            _entityCommandBuffer.RemoveComponent<DisableRendering>(1,entity);
                         }
 
                         _entityCommandBuffer.SetComponent(3, entity,  LocalTransform.FromMatrix(float4x4.TRS(
                             new float3(_chunkCoord.x+x,y,_chunkCoord.z+z),quaternion.identity, new float3(1,1,1)
                             )));
-                        _entityCommandBuffer.RemoveComponent<BlockPrefabType>(3, entity);
+                        _entityCommandBuffer.SetComponent<BlockID>(4,entity,new BlockID(){Id=selfId});
+                        _entityCommandBuffer.RemoveComponent<BlockPrefabType>(5, entity);
+                        _entityCommandBuffer.AddSharedComponent(6, entity, blockBelongToChunk);
                     }
                 }
             }
@@ -92,6 +106,8 @@ namespace MyCraftS.Chunk
             
         }
 
+ 
+ 
  
 
         public int GetOtherBlockID(int3 other)
@@ -128,10 +144,17 @@ namespace MyCraftS.Chunk
         private CreateBlockEntity _lastJobStruct;
         private ComponentType _ChunkInitializeRenderTag;
         private NativeArray<int3> _deltaPos;
+        private int initGameShouldRender;
 
- 
+        private bool isGameInitialized;
+        
+        private int renderedCount;
         private void OnCreate(ref SystemState state)
         {
+            initGameShouldRender = (SettingManager.PlayerSetting.ViewDistance * 2 + 1) *
+                                   (SettingManager.PlayerSetting.ViewDistance * 2 + 1);
+            renderedCount = 0;
+            isGameInitialized = false;
             _query = new EntityQueryBuilder(Allocator.Temp)
                 .WithAll<ChunkBlocks>()
                 .WithAll<ChunkCoord>()
@@ -154,10 +177,20 @@ namespace MyCraftS.Chunk
         //[BurstCompile]
         private void OnUpdate(ref SystemState state)
         {
+            //初始化渲染完成
+            if (!isGameInitialized &&renderedCount == initGameShouldRender)
+            {
+                isGameInitialized = true;
+                Debug.Log($"Game Initialized");
+                SystemManager.GameInitialized();
+            }
             if(CheckJobCompletion(ref state))
             {
                 TryGetNowJob(ref state);
             }
+            
+            
+            
         }
 
         private void TryGetNowJob(ref SystemState state)
@@ -232,7 +265,7 @@ namespace MyCraftS.Chunk
 
             _isGenerating = 0;
             _lastJobHandle.Complete();
-            Debug.Log($"Chunk Initialize Render System:Complete Render Chunk {_lastJobStruct._chunkCoord}");
+            //Debug.Log($"Chunk Initialize Render System:Complete Render Chunk {_lastJobStruct._chunkCoord}");
  
             
             
@@ -242,6 +275,7 @@ namespace MyCraftS.Chunk
             _lastJobStruct._blocks.Dispose();
             //处理上次的数据
             _lastJobStruct._blockIdToEntityLookUp.Dispose();
+            renderedCount++;
             return true;
         }
         [BurstCompile]

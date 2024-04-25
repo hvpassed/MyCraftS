@@ -1,4 +1,5 @@
 ﻿
+using Client.SystemManage;
 using MyCraftS.Block;
 using MyCraftS.Bridge;
 using MyCraftS.Chunk.Manage;
@@ -54,6 +55,8 @@ namespace MyCraftS.Initializer
                         //EntityManager.Instantiate(et);
                         EntityManager.AddComponentData(et, new BlockType());
                         EntityManager.AddComponentData(et, new BlockPrefabType());
+                        EntityManager.AddComponentData(et, new BlockID() { Id = id });
+                        EntityManager.AddComponentData(et, new DisableRendering());
                         EntityManager.RemoveComponent<PhysicsCollider>(et);
                         EntityManager.RemoveComponent<PrefabLoadResult>(et);
                         EntityManager.RemoveComponent<RequestEntityPrefabLoaded>(et);
@@ -70,8 +73,8 @@ namespace MyCraftS.Initializer
  
  
                 this.Enabled = false;
-                TickUpdateGroup.Instance.Enabled = true;
-                Debug.Log("Block loaded.TickUpdateGroup enable");
+                SystemManager.CanStartSystem(ManagedSystem.TickSystemGroup);
+
                 Triggers.BlockLoaded = 1;
 
             }

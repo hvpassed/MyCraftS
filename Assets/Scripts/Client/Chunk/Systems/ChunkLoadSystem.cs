@@ -23,11 +23,11 @@ namespace MyCraftS.Chunk
         }
     }
     /// <summary>
-    /// ¼ÓÔØºÍ±£´æChunk
+    /// åŠ è½½å’Œä¿å­˜Chunk
     /// </summary>
  
     [UpdateInGroup(typeof(ChunkSystemGroup))]
-    public partial struct ChunkLoadSaveSystem : ISystem
+    public partial struct ChunkLoadSystem : ISystem
     {
         
        

@@ -45,7 +45,7 @@ namespace MyCraftS.Chunk
 
 
     [UpdateInGroup(typeof(ChunkSystemGroup))]
-    [UpdateAfter(typeof(ChunkLoadSaveSystem))]
+    [UpdateAfter(typeof(ChunkLoadSystem))]
     public partial struct ChunkGeneratorSystem:ISystem
     {
         private FixedString32Bytes SystemName;
@@ -107,8 +107,8 @@ namespace MyCraftS.Chunk
         private void ProcessCompletedJob(ref SystemState state)
         {
             count++;
-            Debug.Log($"Have processd:{count}");
-            int ind = ChunkDataContainer.Allocate(chunkIdCount);
+            //Debug.Log($"Have processd:{count}");
+            int ind = ChunkDataContainer.Allocate(chunkLoading);
             NativeSlice<int> chunkBlocksData = ChunkDataContainer.Slice(ind);
             if (checkSafety(generateChunk.blockinfo, chunkBlocksData))
             {
