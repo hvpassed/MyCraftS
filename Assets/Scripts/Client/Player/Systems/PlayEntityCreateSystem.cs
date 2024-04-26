@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Client.SystemManage;
+using MyCraftS.Input;
 using MyCraftS.Physic;
 using MyCraftS.Physic.Move;
 using Unity.Collections;
@@ -45,11 +46,12 @@ namespace MyCraftS.Player
                 EntityManager.SetComponentData(playerEntity, physicCollider);
                 EntityManager.SetComponentData(playerEntity,LocalTransform.FromMatrix(
                     float4x4.TRS(
-                        new float3(0,68,0),
+                        new float3(0,-10,0),
                         quaternion.identity, 
                         new float3(1,1,1)
                         )
                 ));
+                //EntityManager.SetComponentEnabled(playerEntity, typeof(IsGrounded),false);
                 var physicmess = EntityManager.GetComponentData<PhysicsMass>(playerEntity);
                 //physicmess.InverseMass = 0;
                 physicmess.InverseInertia=float3.zero;;
@@ -62,6 +64,12 @@ namespace MyCraftS.Player
                 EntityManager.AddComponentData(playerEntity, new PhysicsGravityFactor()
                 {
                     Value = 0.0f
+                });
+                EntityManager.AddComponentData(playerEntity, new CameraStatus()
+                {
+                    xRotation = 0,
+ 
+                    
                 });
                 SystemManager.CanStartSystem(ManagedSystem.TickSystemGroup);
                 this.Enabled = false;

@@ -11,5 +11,14 @@ namespace MyCraftS.Setting
     public class PlayerSetting:ScriptableObject
     {
         public  int ViewDistance = 2;
+
+        public float RunSpeed = 5f;
+        public float WalkSpeed = 2f;
+        
+        public float MouseSensitivity = 2f;
+
+
+        public float minAngle = -87f;
+        public float maxAngle = 87f;
     }
 }

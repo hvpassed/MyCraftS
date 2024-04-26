@@ -2,11 +2,13 @@
 using MyCraftS.Chunk.Data;
 using MyCraftS.Chunk.Manage;
 using MyCraftS.Config;
+using MyCraftS.Utils;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Profiling;
 using UnityEngine;
 namespace MyCraftS.Chunk
 {
@@ -48,6 +50,8 @@ namespace MyCraftS.Chunk
     [UpdateAfter(typeof(ChunkLoadSystem))]
     public partial struct ChunkGeneratorSystem:ISystem
     {
+        static readonly ProfilerMarker chunkGeneratorSystemProfilerMarker = 
+            new ProfilerMarker("ChunkGeneratorSystem");
         private FixedString32Bytes SystemName;
         private int chunkIdCount;
         private int3 chunkLoading;
@@ -75,6 +79,7 @@ namespace MyCraftS.Chunk
         
         private void OnUpdate(ref SystemState state)
         {
+            chunkGeneratorSystemProfilerMarker.Begin();
             if (chunkManager.Equals(Entity.Null))
             {
 
@@ -89,8 +94,8 @@ namespace MyCraftS.Chunk
             {
                 TryStartNewJobs(ref state);
             }
-
-
+            
+            chunkGeneratorSystemProfilerMarker.End();
         }
 
         private bool CheckJobCompletion(ref SystemState state)
@@ -221,9 +226,10 @@ namespace MyCraftS.Chunk
 
 
 
-        private int getHeight(int x,int z)
+        private int getHeight(int x,int z  )
         {
-            return 64;
+            float noise = PerlinNoise2D.Generate((float)x+chunkLoading.x, (float)z+chunkLoading.z, 1 / 64f, 2f);
+            return (int)(64 + 10*(noise/0.36-1));
         }
 
 

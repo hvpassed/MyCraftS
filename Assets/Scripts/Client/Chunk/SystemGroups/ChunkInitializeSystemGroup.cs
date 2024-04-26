@@ -10,6 +10,6 @@ namespace MyCraftS.Chunk
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     public partial class ChunkInitializeSystemGroup : ComponentSystemGroup
     {
-
+        
     }
 }

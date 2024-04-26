@@ -20,7 +20,7 @@ namespace MyCraftS.Physic
         }
     }
 
-    [UpdateInGroup(typeof(PhysicsPreProcessSystemGroup),OrderFirst = true)]
+    [UpdateInGroup(typeof(PhysicsAfterProcessSystemGroup),OrderFirst = true)]
     public partial struct BlockColliderAllDestroySystem:ISystem
     {
         public float deleteTime;

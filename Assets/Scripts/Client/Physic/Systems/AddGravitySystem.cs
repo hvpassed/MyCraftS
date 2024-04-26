@@ -1,9 +1,11 @@
-﻿using MyCraftS.Physic.SystemGroups;
+﻿using Client.SystemManage;
+using MyCraftS.Physic.SystemGroups;
 using MyCraftS.Setting;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
+using UnityEngine;
 
 namespace MyCraftS.Physic
 {
@@ -12,13 +14,13 @@ namespace MyCraftS.Physic
     {
         [ReadOnly] public float gravity;
         public bool debug;
+        public float deltaTime;
         public void Execute([ChunkIndexInQuery] int sortKey, ref PhysicsVelocity physicsVelocity)
         {
-            if (debug)
-            {
-
-                //physicsVelocity.Linear.y += gravity;
-            }
+ 
+            physicsVelocity.Linear.y += gravity *deltaTime;
+ 
+             
         }
 
     }
@@ -28,19 +30,17 @@ namespace MyCraftS.Physic
     [UpdateInGroup(typeof(PhysicsPreProcessSystemGroup))]
     public partial struct AddGravitySystem:ISystem
     {
-        
-        
-        
-        private void OnCreate(ref SystemState state)
-        {
-                
-        }
          
         
+ 
+
+
         private void OnUpdate(ref SystemState state)
         {
+             
             state.Dependency = new AddGravity()
             {
+                deltaTime = SystemAPI.Time.DeltaTime,
                 debug = SettingManager.DebugMode,
                 gravity = SettingManager.GameSetting.Gravity
             }.ScheduleParallel(state.Dependency);

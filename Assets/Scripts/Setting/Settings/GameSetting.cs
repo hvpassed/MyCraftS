@@ -6,5 +6,9 @@ namespace MyCraftS.Setting
     public class GameSetting:ScriptableObject
     {
         public float Gravity = -9.8f;
+
+        public uint Seed = 1;
+
+        public float jumpHeight = 1.5f;
     }
 }
