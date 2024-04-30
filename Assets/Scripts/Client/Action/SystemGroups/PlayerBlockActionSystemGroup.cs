@@ -8,7 +8,7 @@ namespace MyCraftS.Action
 {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateAfter(typeof(PlayerInputSystemGroup))]
-    public partial class PlayerBlockActionGroup:ComponentSystemGroup
+    public partial class PlayerBlockActionSystemGroup:ComponentSystemGroup
     {
         protected override void OnCreate()
         {

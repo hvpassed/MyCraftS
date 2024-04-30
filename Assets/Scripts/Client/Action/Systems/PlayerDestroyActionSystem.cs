@@ -33,15 +33,19 @@ namespace MyCraftS.Action
             int3 intpos = new int3((int)floatpos.x, (int)floatpos.y, (int)floatpos.z);
             if (intpos.Equals(destroyPosition))
             {
-                Debug.Log($"Called DestroyEntity : {intpos}");
-                ecbp.DestroyEntity(index,entity);
+                //Debug.Log($"Called DestroyEntity : {intpos}");
+                ecbp.AddComponent(index,entity,new BlockDestroyCleanUp()
+                {
+                    position = destroyPosition
+                });
+                ecbp.DestroyEntity(index+1,entity);
             }
         }
     }
     
  
     [RequireMatchingQueriesForUpdate]
-    [UpdateInGroup(typeof(PlayerBlockActionGroup))]
+    [UpdateInGroup(typeof(PlayerBlockActionSystemGroup))]
     public partial class PlayerDestroyActionSystem:SystemBase
     {
 
@@ -103,7 +107,7 @@ namespace MyCraftS.Action
                     bool3 positionChanged = position == destroyPosition;
                     if (positionChanged.x && positionChanged.y && positionChanged.z)
                     {
-                        Debug.Log($"Destroying : at {position} ,cost : {destroyCost} ,destroyed : {destroyed}");
+                        //Debug.Log($"Destroying : at {position} ,cost : {destroyCost} ,destroyed : {destroyed}");
                         destroyed += destroySpeed * SystemAPI.Time.DeltaTime;
                         if (destroyed >= destroyCost&&destroyCost!=0)
                         {
@@ -139,7 +143,11 @@ namespace MyCraftS.Action
             ChunkDataContainer.setBlockId(position,0);
 
             ChunkDataContainer.getAllChunkInfo(position,out int3 chunkCoord,out int chunkId,out int chunkIndex);
-
+            if(chunkIndex==-1)
+            {
+                Debug.LogError($"error chunk index at {position}");
+                return;
+            }
             BlockBelongToChunk filter = new BlockBelongToChunk()
             {
                 ChunkCoord = chunkCoord,

@@ -240,7 +240,14 @@ namespace MyCraftS.Chunk.Data
         {
             chunkCoord =  ChunkDataHelper.GetChunkCoord(worldPosition);
             chunkId = getChunkID(worldPosition);
-            ChunkIndex = getIndex(worldPosition);
+            if (ChunkCoordToIndex.ContainsKey(chunkCoord))
+            {
+                ChunkIndex = ChunkCoordToIndex[chunkCoord];
+            }
+            else
+            {
+                ChunkIndex = -1;
+            }
         }
         public static void Dispose()
         {

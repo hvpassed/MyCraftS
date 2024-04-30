@@ -132,6 +132,7 @@ namespace MyCraftS.Chunk
             });
             generateChunk.blockinfo.Dispose();
             UpdateChunkManagementState(ref state);
+            Debug.Log($"Chunk Generate System: Chunk @id:{chunkid} @bufferIndex:{ind} @ChunkCoord:{chunkLoading} Generated!");
         }
 
         private bool checkSafety(NativeArray<int> source,NativeSlice<int> des)
@@ -147,7 +148,7 @@ namespace MyCraftS.Chunk
         private void UpdateChunkManagementState(ref SystemState state)
         {
             var chunkManageAspect = SystemAPI.GetAspect<ChunkManageDataAspect>(chunkManager);
-            Debug.Log($"{SystemName}: Loaded {chunkLoading}");
+            //Debug.Log($"{SystemName}: Loaded {chunkLoading}");
             chunkManageAspect.chunkNotLoaded.ValueRW.waitForLoaded.Remove(chunkLoading);
             chunkManageAspect.chunkLoaded.ValueRW.LoadedSet.Add(chunkLoading);
             _isGenerating = 0;
@@ -185,7 +186,7 @@ namespace MyCraftS.Chunk
         private void StartGeneratingChunk(ref SystemState state)
         {
             _isGenerating = 1;
-            Debug.Log($"{SystemName}: Loading {chunkLoading}");
+            //Debug.Log($"{SystemName}: Loading {chunkLoading}");
             
 
             entity = state.EntityManager.CreateEntity();

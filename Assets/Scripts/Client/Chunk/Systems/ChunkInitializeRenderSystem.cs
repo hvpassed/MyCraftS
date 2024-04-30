@@ -102,6 +102,8 @@ namespace MyCraftS.Chunk
                         _entityCommandBuffer.SetComponent<BlockID>(4,entity,new BlockID(){Id=selfId});
                         _entityCommandBuffer.RemoveComponent<BlockPrefabType>(5, entity);
                         _entityCommandBuffer.AddSharedComponent(6, entity, blockBelongToChunk);
+                        _entityCommandBuffer.AddComponent<BlockShouldUpdate>(7,entity,new BlockShouldUpdate());
+                        _entityCommandBuffer.SetComponentEnabled<BlockShouldUpdate>(8,entity,false);
                     }
                 }
             }
