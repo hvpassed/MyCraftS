@@ -67,7 +67,7 @@ namespace MyCraftS.Physic
     {
         private EntityQuery singletonQuery;
         private EntityQuery _physicsVAndIsGrounded;
-        private float radius = 0.5f;
+        private float radius = 0.25f;
         private CollisionFilter _collisionFilter;
         private float _distance = 0.1f;
         private NativeArray<float3> start;

@@ -44,6 +44,8 @@ namespace MyCraftS.Initializer
             {
                 var physicsCollider = EntityManager.GetComponentData<PhysicsCollider>(entity);
                 physicsCollider.Value.Value.SetCollisionFilter(CollisionFilter);
+                physicsCollider.Value.Value.SetFriction(0);
+                 
                 EntityManager.SetComponentData(entity, physicsCollider);
                 executed = true;
             }
@@ -52,6 +54,7 @@ namespace MyCraftS.Initializer
             {
                 var physicsCollider = EntityManager.GetComponentData<PhysicsCollider>(entity);
                 physicsCollider.Value.Value.SetCollisionFilter(RayCollisionFilter);
+                physicsCollider.Value.Value.SetFriction(0);
                 EntityManager.SetComponentData(entity, physicsCollider);
                 executed = true;
             }

@@ -44,6 +44,7 @@ namespace MyCraftS.Player
                     
                 };
                 physicCollider.Value.Value.SetCollisionFilter(CollideFilter);
+                physicCollider.Value.Value.SetFriction(0);
                 EntityManager.SetComponentData(playerEntity, physicCollider);
                 EntityManager.SetComponentData(playerEntity,LocalTransform.FromMatrix(
                     float4x4.TRS(
