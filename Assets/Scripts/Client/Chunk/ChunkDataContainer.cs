@@ -15,6 +15,7 @@ namespace MyCraftS.Chunk.Data
     public unsafe static class ChunkDataContainer
     {
 
+        public static int ChunkIDAllocator = 0;
         public static Entity ChunkManager;
 
         public static int AllocatedCount = 0;
@@ -26,6 +27,8 @@ namespace MyCraftS.Chunk.Data
         public static NativeHashMap<int, int3> IndexToChunkCoord;
 
         public static NativeHashMap<int3, int> ChunkCoordToIndex;
+        
+        public static NativeHashMap<int,int3> ChunkIDToCoord;
 
         public const int ChunkSize = TerrianConfig.ChunkSize * TerrianConfig.ChunkSize*TerrianConfig.MaxHeight;
         static ChunkDataContainer()
@@ -35,6 +38,7 @@ namespace MyCraftS.Chunk.Data
 
             IndexToChunkCoord = new NativeHashMap<int, int3>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
             ChunkCoordToIndex = new NativeHashMap<int3, int>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
+            ChunkIDToCoord = new NativeHashMap<int, int3>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
         }
         
 
@@ -49,6 +53,16 @@ namespace MyCraftS.Chunk.Data
  
         }
 
+
+        public static void setBlockId(int3 worldCoord, int id)
+        {
+            int ind = getIndex(worldCoord);
+            if (ind != -1)
+            {
+                BlocksData[ind] = id;
+            }
+        }
+        
         public static int getBlockid(int3 ChunkPos,int3 LocalPos)
         {
             int index = getIndex(ChunkPos, LocalPos);
@@ -78,19 +92,36 @@ namespace MyCraftS.Chunk.Data
                 return -1;
             }
         }
+        
+        public static int getChunkID(int3 worldPos)
+        {
+            int3 chunkPos = ChunkDataHelper.GetChunkCoord(worldPos);
+            var enumerator = ChunkIDToCoord.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                bool3 boo = enumerator.Current.Value == chunkPos;
+                if (boo.x == true && boo.y == true && boo.z == true)
+                {
+                    return enumerator.Current.Key;
+                }
+            }
+            return -1;
+        }
         /// <summary>
         /// 返回索引
         /// </summary>
         /// <param name="chunkCoord"></param>
         /// <returns>-1 表示区块buffer用尽</returns>
         ///  
-        public static int Allocate(int3 chunkCoord)
+        public static int Allocate(int3 chunkCoord,out int id)
         {
+            id = -1;
             if (AllocatedCount >= TerrianConfig.MaxLoadedChunk)
             {
+                
                 return -1;
             }
-
+            
             ChunkInfoClear(chunkCoord);
 
             for(int i = 0;i<TerrianConfig.MaxLoadedChunk; i++)
@@ -100,6 +131,9 @@ namespace MyCraftS.Chunk.Data
                     IndexToChunkCoord.Add(i, chunkCoord);
                     ChunkCoordToIndex.Add(chunkCoord, i);
                     AllocatedCount++;
+                    id = ChunkIDAllocator ;
+                    ChunkIDToCoord.Add(ChunkIDAllocator, chunkCoord);
+                    ChunkIDAllocator++;
                     return i;
                 }
 
@@ -134,6 +168,15 @@ namespace MyCraftS.Chunk.Data
                     }
                 }
                 ChunkCoordToIndex.Remove(ChunkCoord);
+                var enumeratorChunkIDToCoord = ChunkIDToCoord.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    bool3 boo = enumerator.Current.Value == ChunkCoord;
+                    if (boo.x == true && boo.y == true && boo.z == true)
+                    {
+                        ChunkIDToCoord.Remove(enumerator.Current.Key);
+                    }
+                }
                 AllocatedCount--;
                 MemClear(index);
             }
@@ -149,7 +192,17 @@ namespace MyCraftS.Chunk.Data
                 int3 chunkCoord = IndexToChunkCoord[index];
                 ChunkCoordToIndex.Remove(chunkCoord);
                 IndexToChunkCoord.Remove(index);
+                var enumerator = ChunkIDToCoord.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    bool3 boo = enumerator.Current.Value == chunkCoord;
+                    if (boo.x == true && boo.y == true && boo.z == true)
+                    {
+                        ChunkIDToCoord.Remove(enumerator.Current.Key);
+                    }
+                }
                 AllocatedCount--;
+                MemClear(index);
             }
 
         }
@@ -182,6 +235,13 @@ namespace MyCraftS.Chunk.Data
             UnsafeUtility.MemClear(startPtr, sizeInBytes);
         }
 
+
+        public static void getAllChunkInfo(int3 worldPosition, out int3 chunkCoord, out int chunkId, out int ChunkIndex)
+        {
+            chunkCoord =  ChunkDataHelper.GetChunkCoord(worldPosition);
+            chunkId = getChunkID(worldPosition);
+            ChunkIndex = getIndex(worldPosition);
+        }
         public static void Dispose()
         {
             BlocksData.Dispose();

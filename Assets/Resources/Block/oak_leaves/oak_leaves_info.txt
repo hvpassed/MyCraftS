@@ -5,3 +5,4 @@ transparent: true
 colliderType: StanderdBlock
 hasDirect: false
 isLiquid: false
+canRayCast: true

@@ -26,5 +26,7 @@ namespace Importer.Data
         public bool hasDirect;
 
         public bool isLiquid;
+        
+        public bool canRayCast;
     }
 }

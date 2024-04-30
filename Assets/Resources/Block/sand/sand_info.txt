@@ -1,7 +1,8 @@
-blockId: 6
+blockId: 128
 canCollide: true
 canBeDestroyed: true
 transparent: false
 colliderType: StanderdBlock
 hasDirect: false
 isLiquid: false
+canRayCast: true

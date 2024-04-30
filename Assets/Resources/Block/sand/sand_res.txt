@@ -11,17 +11,11 @@ texture:
     bottom: sand.png
     front: sand.png
     left: sand.png
-  normal:
+  normal: &o0
     back: sand_n.png
     right: sand_n.png
     top: sand_n.png
     bottom: sand_n.png
     front: sand_n.png
     left: sand_n.png
-  specular:
-    back: sand_s.png
-    right: sand_s.png
-    top: sand_s.png
-    bottom: sand_s.png
-    front: sand_s.png
-    left: sand_s.png
+  specular: *o0

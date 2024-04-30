@@ -11,5 +11,9 @@ namespace MyCraftS.Player.Data
     {
 
         public static Entity playerEntity;
+
+        public static Entity cameraEntity;
+
+        public static Entity cameraRayHitEntity;
     }
 }

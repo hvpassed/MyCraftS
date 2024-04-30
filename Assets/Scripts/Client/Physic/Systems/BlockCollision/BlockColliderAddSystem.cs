@@ -2,7 +2,7 @@
 
 using MyCraftS.Bake;
 using MyCraftS.Data.Component;
-using MyCraftS.Physic.Move;
+ 
 using MyCraftS.Physic.SystemGroups;
 using MyCraftS.Utils;
 using Unity.Burst;
@@ -45,6 +45,7 @@ namespace MyCraftS.Physic
                         
                         
                         _ParallelWriter.RemoveComponent<BlockColliderPrefabType>(sortKey,entity);
+                        
                         // BlobAssetReference<Collider> boxCollider = BoxCollider.Create(new BoxGeometry()
                         // {
                         //     Center = new float3(0,0,0),

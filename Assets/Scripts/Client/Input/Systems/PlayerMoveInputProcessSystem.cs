@@ -22,6 +22,8 @@ namespace MyCraftS.Input
         public InputActionAsset inputActionAsset;
  
         public Entity playerEntity;
+        public Entity cameraEntity;
+        
         private InputAction _moveAction,_mouseMoveAction,_debugAction,_debugShowChunkBlocksAction,_runAction,_jumpAction;
 
         
@@ -64,6 +66,7 @@ namespace MyCraftS.Input
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             playerEntity = PlayerDataContainer.playerEntity;
+            cameraEntity = PlayerDataContainer.cameraEntity;
             this.Enabled = true;
         }
 
@@ -113,7 +116,7 @@ namespace MyCraftS.Input
         {
             var transform = EntityManager.GetComponentData<LocalTransform>(playerEntity);
             var PhysicsVelocity = EntityManager.GetComponentData<PhysicsVelocity>(playerEntity);
-            var xRotationComponent = EntityManager.GetComponentData<CameraStatus>(playerEntity);
+            var xRotationComponent = EntityManager.GetComponentData<CameraStatus>(cameraEntity);
             var xr = xRotationComponent.xRotation;
 
             Speed.y = PhysicsVelocity.Linear.y;
@@ -133,7 +136,7 @@ namespace MyCraftS.Input
             transform.Rotation = math.mul(transform.Rotation, quaternion.Euler(playerRotate));
             EntityManager.SetComponentData(playerEntity,transform);
             xRotationComponent.xRotation = xr;
-            EntityManager.SetComponentData(playerEntity, xRotationComponent);
+            EntityManager.SetComponentData(cameraEntity, xRotationComponent);
             mouseX = 0;
             mouseY = 0;
         }

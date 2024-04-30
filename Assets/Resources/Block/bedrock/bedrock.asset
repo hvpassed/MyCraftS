@@ -48,3 +48,4 @@ MonoBehaviour:
     colliderType: 0
     hasDirect: 0
     isLiquid: 0
+    canRayCast: 1

@@ -13,7 +13,7 @@ namespace MyCraftS.Physic
         public EntityCommandBuffer.ParallelWriter _ParallelWriter;
         
         
-        public void Execute(Entity entity,[EntityIndexInQuery] int index, [ReadOnly] in BlockColliderType blockColliderType)
+        public void Execute(Entity entity,[EntityIndexInQuery] int index)
         {
             
             _ParallelWriter.DestroyEntity(index, entity);
@@ -25,14 +25,20 @@ namespace MyCraftS.Physic
     {
         public float deleteTime;
         public float passedTime;
-        public EntityQuery _query;
+        public EntityQuery _queryBlockCollider;
+        public EntityQuery _queryRayCollider;
         private void OnCreate(ref SystemState state)
         {
             deleteTime = 1.0f;
             passedTime = 0;
-            _query = new EntityQueryBuilder(Allocator.Temp)
+            _queryBlockCollider = new EntityQueryBuilder(Allocator.Temp)
                 .WithAll<BlockColliderType>()
+                
                 .WithNone<BlockColliderPrefabType>()
+                .Build(ref state);
+            _queryRayCollider = new EntityQueryBuilder(Allocator.Temp)
+                .WithAll<RayColliderType>()
+                .WithNone<RayColliderPrefabType>()
                 .Build(ref state);
         }
         
@@ -49,14 +55,21 @@ namespace MyCraftS.Physic
             //     passedTime -= deleteTime;
             // }
             var entityCommandBuffer = new EntityCommandBuffer(Allocator.TempJob);
-            
+            var ecbrc = new EntityCommandBuffer(Allocator.TempJob);
             state.Dependency = new DestroyAll()
             {
                 _ParallelWriter = entityCommandBuffer.AsParallelWriter()
-            }.Schedule(_query,state.Dependency);
+            }.Schedule(_queryBlockCollider,state.Dependency);
             state.Dependency.Complete();
             entityCommandBuffer.Playback(state.EntityManager);
             entityCommandBuffer.Dispose();
+            state.Dependency = new DestroyAll()
+            {
+                _ParallelWriter = ecbrc.AsParallelWriter()
+            }.Schedule(_queryRayCollider,state.Dependency);
+            state.Dependency.Complete();
+            ecbrc.Playback(state.EntityManager);
+            ecbrc.Dispose();
         }
     }
 }

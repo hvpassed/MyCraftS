@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using Client.SystemManage;
 using MyCraftS.Input;
 using MyCraftS.Physic;
-using MyCraftS.Physic.Move;
+ 
+using MyCraftS.Setting;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -65,17 +66,57 @@ namespace MyCraftS.Player
                 {
                     Value = 0.0f
                 });
-                EntityManager.AddComponentData(playerEntity, new CameraStatus()
+ 
+                PlayerDataContainer.cameraEntity = EntityManager.CreateEntity();
+                EntityManager.AddComponentData(PlayerDataContainer.cameraEntity, new CameraType());
+                EntityManager.AddComponentData(PlayerDataContainer.cameraEntity, new CameraStatus()
                 {
                     xRotation = 0,
- 
-                    
                 });
+                EntityManager.AddComponentData(PlayerDataContainer.cameraEntity, new CameraOffSet()
+                {
+                    offset =SettingManager.PlayerSetting.CameraOffset
+                });
+                EntityManager.AddComponentData(PlayerDataContainer.cameraEntity, new CameraForward()
+                {
+                    direction = float3.zero
+                });
+                CreateCameraRayHitEntity();
+                CreateDestroyActionEntity();
+                CreatePlaceActionEntity();
                 SystemManager.CanStartSystem(ManagedSystem.TickSystemGroup);
                 this.Enabled = false;
             }
         }
 
+        private void CreateDestroyActionEntity()
+        {
+            var entity = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(entity, new DestroyAction());
+            EntityManager.SetComponentEnabled<DestroyAction>(entity,false);
+            PlayerBlockInputProcessSystem.destroyEntity = entity;
+        }
+        private void CreatePlaceActionEntity()
+        {
+            var entity = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(entity, new PlaceAction());
+            EntityManager.SetComponentEnabled<PlaceAction>(entity,false);
+            PlayerBlockInputProcessSystem.placeEntity = entity;
+        }
+        private void CreateCameraRayHitEntity()
+        {
+            var entity = EntityManager.CreateEntity();
+            EntityManager.AddComponentData(entity, new CameraRayHitType());
+            EntityManager.AddComponentData(entity, new CameraRayIsHit());
+            EntityManager.AddComponentData(entity, new CameraRayHitInfo()
+            {
+                blockId = -1,
+                blockPosition = float3.zero,
+                hitSide = HitSide.NegativeX
+            });
+            EntityManager.SetComponentEnabled(entity, typeof(CameraRayIsHit), false);
+            PlayerDataContainer.cameraRayHitEntity = entity;
+        }
         protected override void OnDestroy()
         {
             base.OnDestroy();

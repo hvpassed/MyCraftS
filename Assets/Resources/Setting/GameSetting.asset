@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df16e23e63d74f848c1d89fbdf24c82c, type: 3}
   m_Name: GameSetting
   m_EditorClassIdentifier: 
-  Gravity: -0.01
+  Gravity: -9.8
+  Seed: 1
+  jumpHeight: 1.5

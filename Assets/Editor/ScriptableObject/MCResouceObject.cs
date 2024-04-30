@@ -127,7 +127,7 @@ public class MCResouceObject : ScriptableObject
         int totalWidth = 0;
         int maxHeight = 0;
 
-        // ¼ÓÔØÍ¼Æ¬²¢¼ÆËã×Ü¿í¶ÈºÍ×î´ó¸ß¶È
+        // åŠ è½½å›¾ç‰‡å¹¶è®¡ç®—æ€»å®½åº¦å’Œæœ€å¤§é«˜åº¦
         Texture2D[] textures = new Texture2D[inputImgs.Length];
         for (int i = 0; i < inputImgs.Length; i++)
         {
@@ -136,7 +136,7 @@ public class MCResouceObject : ScriptableObject
             maxHeight = Mathf.Max(maxHeight, textures[i].height);
         }
 
-        // ´´½¨Êä³öÍ¼Æ¬
+        // åˆ›å»ºè¾“å‡ºå›¾ç‰‡
         Texture2D outputTexture = new Texture2D(totalWidth, maxHeight);
         int currentWidth = 0;
         for (int i = 0; i < textures.Length; i++)
@@ -153,13 +153,13 @@ public class MCResouceObject : ScriptableObject
 
         outputTexture.Apply();
 
-        // ±£´æÊä³öÍ¼Æ¬
+        // ä¿å­˜è¾“å‡ºå›¾ç‰‡
         File.WriteAllBytes(outputImg, outputTexture.EncodeToPNG());
 
 
     }
 
-    // ¼ÓÔØÍ¼Æ¬¸¨Öú·½·¨
+    // åŠ è½½å›¾ç‰‡è¾…åŠ©æ–¹æ³•
     private Texture2D LoadTexture(string filePath)
     {
         Texture2D tex = null;
@@ -169,7 +169,7 @@ public class MCResouceObject : ScriptableObject
         {
             fileData = File.ReadAllBytes(filePath);
             tex = new Texture2D(size, size);
-            tex.LoadImage(fileData); //..Õâ½«×Ô¶¯µ÷ÕûÍ¼Æ¬µÄ´óÐ¡
+            tex.LoadImage(fileData); //..è¿™å°†è‡ªåŠ¨è°ƒæ•´å›¾ç‰‡çš„å¤§å°
         }
         return tex;
     }

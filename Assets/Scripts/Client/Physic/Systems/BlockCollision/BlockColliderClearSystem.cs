@@ -30,6 +30,7 @@ namespace MyCraftS.Physic
             _query = new EntityQueryBuilder(Allocator.Temp)
                 .WithAll<BlockColliderType>()
                 .WithNone<BlockColliderPrefabType>()
+                .WithNone<RayColliderType>()
                 .Build(this);
             _query2 = new EntityQueryBuilder(Allocator.Temp)
                 .WithAll<BlockColliderPrefabType>()
@@ -70,9 +71,7 @@ namespace MyCraftS.Physic
                             aabb = aabb
                         });
                     }
-                    var physicsCollider = EntityManager.GetComponentData<PhysicsCollider>(entities[i]);
-                    var a = physicsCollider.Value.Value;
-
+ 
                     EntityManager.DestroyEntity(entities[i]);
                  
                 }

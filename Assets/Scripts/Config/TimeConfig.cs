@@ -8,6 +8,6 @@ namespace MyCraftS.Config
 {
     public static class TimeConfig 
     {
-        public readonly static float tick = 0.1f;
+        public readonly static float tick = 0.05f;
     }
 }

@@ -5,11 +5,11 @@ shape: Cube
 texture:
   size: 16
   diffuse: &o0
-    back: water.png
-    right: water.png
+    back: water_side.png
+    right: water_side.png
     top: water.png
-    bottom: water.png
-    front: water.png
-    left: water.png
+    bottom: water_side.png
+    front: water_side.png
+    left: water_side.png
   normal: *o0
   specular: *o0

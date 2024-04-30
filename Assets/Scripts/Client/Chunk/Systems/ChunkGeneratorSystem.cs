@@ -53,7 +53,7 @@ namespace MyCraftS.Chunk
         static readonly ProfilerMarker chunkGeneratorSystemProfilerMarker = 
             new ProfilerMarker("ChunkGeneratorSystem");
         private FixedString32Bytes SystemName;
-        private int chunkIdCount;
+ 
         private int3 chunkLoading;
         private int _isGenerating;
         private int isFirst;
@@ -66,7 +66,7 @@ namespace MyCraftS.Chunk
         private int count;
         private void OnCreate(ref SystemState state)
         {
-            chunkIdCount = 0;
+ 
             _isGenerating = 0;
             isFirst = 1;
             SystemName = "Chunk Generator System";
@@ -113,7 +113,8 @@ namespace MyCraftS.Chunk
         {
             count++;
             //Debug.Log($"Have processd:{count}");
-            int ind = ChunkDataContainer.Allocate(chunkLoading);
+            int ind = ChunkDataContainer.Allocate(chunkLoading,out int chunkid);
+            
             NativeSlice<int> chunkBlocksData = ChunkDataContainer.Slice(ind);
             if (checkSafety(generateChunk.blockinfo, chunkBlocksData))
             {
@@ -125,7 +126,10 @@ namespace MyCraftS.Chunk
                 blocks = chunkBlocksData
             });
             state.EntityManager.AddComponentData(entity,new ChunkInitializeRenderTag());
-
+            state.EntityManager.AddComponentData(entity, new ChunkID()
+            {
+                id = chunkid
+            });
             generateChunk.blockinfo.Dispose();
             UpdateChunkManagementState(ref state);
         }
@@ -189,12 +193,9 @@ namespace MyCraftS.Chunk
             {
                 chunkCoord = chunkLoading
             });
-            state.EntityManager.AddComponentData(entity, new ChunkID()
-            {
-                id = chunkIdCount
-            });
+
             state.EntityManager.AddComponentData(entity, new ChunkType());
-            chunkIdCount++;
+ 
             chunkHeightMap = state.EntityManager.AddBuffer<ChunkHeightMap>(entity);
             chunkHeightMap.Resize(TerrianConfig.ChunkSize * TerrianConfig.ChunkSize,NativeArrayOptions.ClearMemory);
             NativeArray<int> hm = new NativeArray<int>(TerrianConfig.ChunkSize * TerrianConfig.ChunkSize, Allocator.Persistent);

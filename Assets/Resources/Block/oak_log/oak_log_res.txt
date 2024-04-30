@@ -3,7 +3,7 @@ id: 7
 name: oak_log
 shape: Cube
 texture:
-  size: 0
+  size: 128
   diffuse:
     back: oak_log.png
     right: oak_log.png

@@ -27,6 +27,8 @@ namespace MyCraftS.Data.IO
         public bool hasDirect;
 
         public bool isLiquid;
+
+        public bool canRayCast;
     }
 
     public struct BlockInfo
@@ -45,6 +47,7 @@ namespace MyCraftS.Data.IO
 
         public MyCraftsBoolean isLiquid;
 
+        public MyCraftsBoolean canRayCast;
     }
 
 
@@ -60,7 +63,7 @@ namespace MyCraftS.Data.IO
             blockInfo.colliderType = yamlType.colliderType;
             blockInfo.hasDirect = convertBoolean(yamlType.hasDirect);
             blockInfo.isLiquid = convertBoolean(yamlType.isLiquid);
-                
+            blockInfo.canRayCast = convertBoolean(yamlType.canRayCast);
 
 
             return blockInfo;
