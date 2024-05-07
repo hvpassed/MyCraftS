@@ -27,5 +27,7 @@ namespace MyCraftS.Setting
         
         
         public float rayDistance = 5f;
+
+        public float PlaceGapTime = 0.15f;
     }
 }

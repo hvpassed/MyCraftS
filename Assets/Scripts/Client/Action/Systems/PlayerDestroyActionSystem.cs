@@ -1,5 +1,6 @@
 ﻿using System;
 using MyCraftS.Block;
+using MyCraftS.Block.Utils;
 using MyCraftS.Chunk;
 using MyCraftS.Chunk.Data;
 using MyCraftS.Data.IO;
@@ -22,28 +23,28 @@ namespace MyCraftS.Action
         Destroyed
     }
 
-    public partial struct DestroyEntity : IJobEntity
-    {
-        [ReadOnly] public int3 destroyPosition;
-        public EntityCommandBuffer.ParallelWriter ecbp;
-        
-        private void Execute([ChunkIndexInQuery] int index, Entity entity,in LocalTransform transform)
-        {
-            float3 floatpos = math.floor(transform.Position);
-            int3 intpos = new int3((int)floatpos.x, (int)floatpos.y, (int)floatpos.z);
-            if (intpos.Equals(destroyPosition))
-            {
-                //Debug.Log($"Called DestroyEntity : {intpos}");
-                ecbp.AddComponent(index,entity,new BlockDestroyCleanUp()
-                {
-                    position = destroyPosition
-                });
-                ecbp.DestroyEntity(index+1,entity);
-            }
-        }
-    }
-    
- 
+    //public partial struct DestroyEntity : IJobEntity
+    //{
+    //    [ReadOnly] public int3 destroyPosition;
+    //    public EntityCommandBuffer.ParallelWriter ecbp;
+
+    //    private void Execute([ChunkIndexInQuery] int index, Entity entity, in LocalTransform transform)
+    //    {
+    //        float3 floatpos = math.floor(transform.Position);
+    //        int3 intpos = new int3((int)floatpos.x, (int)floatpos.y, (int)floatpos.z);
+    //        if (intpos.Equals(destroyPosition))
+    //        {
+    //            Debug.Log($"Called DestroyEntity : {intpos}");
+    //            ecbp.AddComponent(index, entity, new BlockDestroyCleanUp()
+    //            {
+    //                position = destroyPosition
+    //            });
+    //            ecbp.DestroyEntity(index + 1, entity);
+    //        }
+    //    }
+    //}
+
+
     [RequireMatchingQueriesForUpdate]
     [UpdateInGroup(typeof(PlayerBlockActionSystemGroup))]
     public partial class PlayerDestroyActionSystem:SystemBase
@@ -78,7 +79,7 @@ namespace MyCraftS.Action
         
         protected override void OnUpdate()
         {
-            if (_queryAction.CalculateEntityCount() == 0 || _queryRayHit.CalculateEntityCount() == 0)
+            if (_queryAction.IsEmpty || _queryRayHit.IsEmpty)
             {
                 SetState(DestroyActionState.None);
                 return;
@@ -127,45 +128,48 @@ namespace MyCraftS.Action
                 case DestroyActionState.Destroyed:
                 {
                     Debug.Log($"Destroyed : at {position}");
-                    destroyPosition= new int3(-1, -1, -1);
+                    BlockHelper.DestroyBlockAtPosition(destroyPosition);
+
+                    destroyPosition = new int3(-1, -1, -1);
                     destroyCost= 0;
                     destroyed = 0;
-                    DestroyBlockFromPosition(position);
-                     
+                    //DestroyBlockFromPosition(position);
+                    
+
                     break;
                 }
             }
             _state = state;
         }
 
-        private void DestroyBlockFromPosition(int3 position)
-        {
-            ChunkDataContainer.setBlockId(position,0);
+        //private void DestroyBlockFromPosition(int3 position)
+        //{
+        //    ChunkDataContainer.setBlockId(position,0);
 
-            ChunkDataContainer.getAllChunkInfo(position,out int3 chunkCoord,out int chunkId,out int chunkIndex);
-            if(chunkIndex==-1)
-            {
-                Debug.LogError($"error chunk index at {position}");
-                return;
-            }
-            BlockBelongToChunk filter = new BlockBelongToChunk()
-            {
-                ChunkCoord = chunkCoord,
-                ChunkId = chunkId,
-                ChunkBufferIndex = chunkIndex
-            };
-            _satisfyEntityQuery.SetSharedComponentFilter(filter);
-            EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
-            this.Dependency = new DestroyEntity()
-            {
-                destroyPosition = position,
-                ecbp = ecb.AsParallelWriter()
-            }.ScheduleParallel(_satisfyEntityQuery, this.Dependency);
-            this.Dependency.Complete();
-            ecb.Playback(EntityManager);
-            ecb.Dispose();
+        //    ChunkDataContainer.getAllChunkInfo(position,out int3 chunkCoord,out int chunkId,out int chunkIndex);
+        //    if(chunkIndex==-1)
+        //    {
+        //        Debug.LogError($"error chunk index at {position}");
+        //        return;
+        //    }
+        //    BlockBelongToChunk filter = new BlockBelongToChunk()
+        //    {
+        //        ChunkCoord = chunkCoord,
+        //        ChunkId = chunkId,
+        //        ChunkBufferIndex = chunkIndex
+        //    };
+        //    _satisfyEntityQuery.SetSharedComponentFilter(filter);
+        //    EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
+        //    this.Dependency = new DestroyEntity()
+        //    {
+        //        destroyPosition = position,
+        //        ecbp = ecb.AsParallelWriter()
+        //    }.ScheduleParallel(_satisfyEntityQuery, this.Dependency);
+        //    this.Dependency.Complete();
+        //    ecb.Playback(EntityManager);
+        //    ecb.Dispose();
             
-        }
+        //}
         
         
 

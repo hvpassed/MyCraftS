@@ -1,31 +1,40 @@
-
+using MyCraftS.Physic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using UnityEngine;
+using BoxCollider = Unity.Physics.BoxCollider;
+using Collider = Unity.Physics.Collider;
+using Material = Unity.Physics.Material;
 
-namespace MyCraftS.Bake.Baker
+
+namespace  MyCraftS.Bake.Baker
 {
-    public class BlockTriggerAuthoring : MonoBehaviour
-    {
-        // Start is called before the first frame update
-
-    }
-
+    
     public struct BlockTriggerPrefabType : IComponentData
     {
-
+        
     }
- 
+    
+    
+    public class BlockTriggerAuthoring:MonoBehaviour
+    {
+        
+        
+        
+    }
+
 
 
     public class BlockTriggerBaker : Baker<BlockTriggerAuthoring>
     {
         public override void Bake(BlockTriggerAuthoring authoring)
         {
-
+            
+            
+            
             var blockColliderEntity = GetEntity(TransformUsageFlags.Dynamic);
-            // ´´½¨Á¢·½ÌåÅö×²ÌåÃèÊö·û
+            // åˆ›å»ºç«‹æ–¹ä½“ç¢°æ’ä½“æè¿°ç¬¦
             BoxGeometry boxGeometry = new BoxGeometry
             {
                 Center = new float3(0.5f, 0.5f, 0.5f),
@@ -33,11 +42,15 @@ namespace MyCraftS.Bake.Baker
                 Orientation = quaternion.identity,
                 BevelRadius = 0f
             };
+            CollisionFilter collisionFilter = new CollisionFilter()
+            {
+                BelongsTo = CollisionGroups.BlockGroup,
+                CollidesWith = CollisionGroups.CreatureGroup
 
-            // ´´½¨Åö×²Ìå
-            BlobAssetReference<Unity.Physics.Collider> collider = Unity.Physics.BoxCollider.Create(boxGeometry);
+            };
+            // åˆ›å»ºç¢°æ’ä½“
+            BlobAssetReference<Collider> collider =  BoxCollider.Create(boxGeometry,collisionFilter);
             collider.Value.SetCollisionResponse(CollisionResponsePolicy.RaiseTriggerEvents);
-            
             AddComponent<PhysicsCollider>(blockColliderEntity, new PhysicsCollider
             {
                 Value = collider

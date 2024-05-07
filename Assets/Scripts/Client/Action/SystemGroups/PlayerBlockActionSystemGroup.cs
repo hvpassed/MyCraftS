@@ -3,11 +3,13 @@ using MyCraftS.Chunk;
 using MyCraftS.Input;
 using MyCraftS.Time;
 using Unity.Entities;
+using Unity.Physics.Systems;
 
 namespace MyCraftS.Action
 {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateAfter(typeof(PlayerInputSystemGroup))]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    //[UpdateAfter(typeof(PlayerInputSystemGroup))]
+    [UpdateAfter(typeof(PhysicsSystemGroup))]
     public partial class PlayerBlockActionSystemGroup:ComponentSystemGroup
     {
         protected override void OnCreate()

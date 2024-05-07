@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace MyCraftS.Action
 {
-    public struct WantPlace:IComponentData
+    public struct WantCreate:IComponentData
     {
         public int3 position;
         public bool canCollide;

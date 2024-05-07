@@ -27,6 +27,29 @@ namespace MyCraftS.Physic
     public static class RayHitHelper
     {
 
+        
+        public static int3 DeltaPos(HitSide hitSide)
+        {
+            switch (hitSide)
+            {
+                case HitSide.NegativeX:
+                    return new int3(-1, 0, 0);
+                case HitSide.PositiveX:
+                    return new int3(1, 0, 0);
+                case HitSide.NegativeY:
+                    return new int3(0, -1, 0);
+                case HitSide.PositiveY:
+                    return new int3(0, 1, 0);
+                case HitSide.NegativeZ:
+                    return new int3(0, 0, -1);
+                case HitSide.PositiveZ:
+                    return new int3(0, 0, 1);
+                case HitSide.None:
+                    return new int3(0, 0, 0);
+            }
+
+            return new int3(0, 0, 0);
+        }
         /// <summary>
         /// positive相等，negative差一
         /// </summary>
