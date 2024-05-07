@@ -37,7 +37,7 @@ namespace  MyCraftS.Bake
 
             // 创建碰撞体
             BlobAssetReference<Collider> collider =  BoxCollider.Create(boxGeometry);
-             
+            collider.Value.SetCollisionResponse(CollisionResponsePolicy.None);
             AddComponent<PhysicsCollider>(blockColliderEntity, new PhysicsCollider
             {
                 Value = collider
