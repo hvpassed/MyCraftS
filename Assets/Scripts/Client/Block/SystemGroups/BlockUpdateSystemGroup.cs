@@ -1,5 +1,6 @@
-﻿using Client.SystemManage;
+﻿ 
 using MyCraftS.Action;
+using MyCraftS.SystemManage;
 using Unity.Entities;
 
 namespace MyCraftS.Block.Update

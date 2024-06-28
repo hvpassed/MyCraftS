@@ -142,34 +142,7 @@ namespace MyCraftS.Action
             _state = state;
         }
 
-        //private void DestroyBlockFromPosition(int3 position)
-        //{
-        //    ChunkDataContainer.setBlockId(position,0);
 
-        //    ChunkDataContainer.getAllChunkInfo(position,out int3 chunkCoord,out int chunkId,out int chunkIndex);
-        //    if(chunkIndex==-1)
-        //    {
-        //        Debug.LogError($"error chunk index at {position}");
-        //        return;
-        //    }
-        //    BlockBelongToChunk filter = new BlockBelongToChunk()
-        //    {
-        //        ChunkCoord = chunkCoord,
-        //        ChunkId = chunkId,
-        //        ChunkBufferIndex = chunkIndex
-        //    };
-        //    _satisfyEntityQuery.SetSharedComponentFilter(filter);
-        //    EntityCommandBuffer ecb = new EntityCommandBuffer(Allocator.TempJob);
-        //    this.Dependency = new DestroyEntity()
-        //    {
-        //        destroyPosition = position,
-        //        ecbp = ecb.AsParallelWriter()
-        //    }.ScheduleParallel(_satisfyEntityQuery, this.Dependency);
-        //    this.Dependency.Complete();
-        //    ecb.Playback(EntityManager);
-        //    ecb.Dispose();
-            
-        //}
         
         
 

@@ -1,6 +1,6 @@
-﻿using Client.SystemManage;
-using MyCraftS.Player.Data;
+﻿using MyCraftS.Player.Data;
 using MyCraftS.Setting;
+using MyCraftS.SystemManage;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;

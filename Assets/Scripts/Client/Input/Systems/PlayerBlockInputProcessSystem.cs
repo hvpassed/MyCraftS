@@ -1,4 +1,4 @@
-﻿using Client.SystemManage;
+﻿using MyCraftS.SystemManage;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.InputSystem;

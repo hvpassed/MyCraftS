@@ -3,7 +3,7 @@ using Unity.Entities;
 using Unity.Entities.Serialization;
 using UnityEngine;
 
-namespace  MyCraftS.Bake.Baker
+namespace MyCraftS.Bake.Baker
 {
     public struct BlockEntityPrefab:IComponentData
     {

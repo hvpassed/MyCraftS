@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyCraftS.Database;
+using MyCraftS.Database.Model;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
@@ -15,7 +17,7 @@ namespace MyCraftS.Chunk.Data
     public unsafe static class ChunkDataContainer
     {
 
-        public static int ChunkIDAllocator = 0;
+        private static int ChunkIDAllocator = 0;
         public static Entity ChunkManager;
 
         public static int AllocatedCount = 0;
@@ -39,6 +41,8 @@ namespace MyCraftS.Chunk.Data
             IndexToChunkCoord = new NativeHashMap<int, int3>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
             ChunkCoordToIndex = new NativeHashMap<int3, int>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
             ChunkIDToCoord = new NativeHashMap<int, int3>(TerrianConfig.MaxLoadedChunk, Allocator.Persistent);
+            GameInfoModel gameInfoModel = GameInfoModel.Read(DatabaseManager.GameDatabase);
+            ChunkIDAllocator = gameInfoModel.ChunkID;
         }
         
 
@@ -107,6 +111,14 @@ namespace MyCraftS.Chunk.Data
             }
             return -1;
         }
+
+
+        public static int AllocateID()
+        {
+            ChunkIDAllocator++;
+            GameInfoModel.Update(ChunkIDAllocator,DatabaseManager.GameDatabase);
+            return ChunkIDAllocator;
+        }
         /// <summary>
         /// 返回索引
         /// </summary>
@@ -131,9 +143,8 @@ namespace MyCraftS.Chunk.Data
                     IndexToChunkCoord.Add(i, chunkCoord);
                     ChunkCoordToIndex.Add(chunkCoord, i);
                     AllocatedCount++;
-                    id = ChunkIDAllocator ;
-                    ChunkIDToCoord.Add(ChunkIDAllocator, chunkCoord);
-                    ChunkIDAllocator++;
+                    id = AllocateID() ;
+                    ChunkIDToCoord.Add(id, chunkCoord);
                     return i;
                 }
 

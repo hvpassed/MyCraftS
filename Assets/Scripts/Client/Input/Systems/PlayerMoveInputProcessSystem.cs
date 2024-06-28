@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Client.SystemManage;
 using MyCraftS.Input;
 using MyCraftS.Physic;
 using MyCraftS.Player;
 using MyCraftS.Player.Data;
 using MyCraftS.Setting;
+using MyCraftS.SystemManage;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;

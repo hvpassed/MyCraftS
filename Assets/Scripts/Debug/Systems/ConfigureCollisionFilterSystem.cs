@@ -1,8 +1,8 @@
-﻿using Client.SystemManage;
-using MyCraftS.Bake;
+﻿using MyCraftS.Bake;
 using MyCraftS.Chunk.Data;
 using MyCraftS.Config;
 using MyCraftS.Player;
+using MyCraftS.SystemManage;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;

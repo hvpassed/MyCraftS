@@ -1,9 +1,9 @@
 ﻿
-using Client.SystemManage;
 using MyCraftS.Block;
 using MyCraftS.Bridge;
 using MyCraftS.Chunk.Manage;
 using MyCraftS.Data.IO;
+using MyCraftS.SystemManage;
 using MyCraftS.Time;
 using Unity.Entities;
 using Unity.Entities.Graphics;
@@ -74,7 +74,7 @@ namespace MyCraftS.Initializer
  
                 this.Enabled = false;
                 SystemManager.CanStartSystem(ManagedSystem.TickSystemGroup);
-
+                Debug.Log("Block Entity Get System : Initialization Compeleted");
                 Triggers.BlockLoaded = 1;
 
             }

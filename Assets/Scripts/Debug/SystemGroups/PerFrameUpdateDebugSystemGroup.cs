@@ -1,5 +1,4 @@
-﻿ 
-using Client.SystemManage;
+﻿using MyCraftS.SystemManage;
 using Unity.Entities;
 
 namespace MyCraftS.DeBug.SystemGroups

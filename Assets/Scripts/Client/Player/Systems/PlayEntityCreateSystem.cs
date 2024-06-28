@@ -1,10 +1,6 @@
-﻿using MyCraftS.Player.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Client.SystemManage;
+﻿using MyCraftS.Database;
+using MyCraftS.Player.Data;
+
 using MyCraftS.Input;
 using MyCraftS.Physic;
  
@@ -15,6 +11,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
+using MyCraftS.SystemManage;
 
 namespace MyCraftS.Player
 {
@@ -25,6 +22,8 @@ namespace MyCraftS.Player
         public EntityQuery _PlayerQuery;
         protected override void OnCreate()
         {
+            
+            
             _PlayerQuery = new EntityQueryBuilder(Allocator.Temp)
                 .WithAll<PlayerType>().Build(this);
 
@@ -86,6 +85,7 @@ namespace MyCraftS.Player
                 CreateDestroyActionEntity();
                 CreatePlaceActionEntity();
                 SystemManager.CanStartSystem(ManagedSystem.TickSystemGroup);
+                Debug.Log("Play Entity Create System : Initialization Compeleted");
                 this.Enabled = false;
             }
         }

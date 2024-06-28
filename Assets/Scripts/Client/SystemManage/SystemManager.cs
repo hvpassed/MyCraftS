@@ -5,7 +5,7 @@ using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
-namespace Client.SystemManage
+namespace MyCraftS.SystemManage
 {
     public enum ManagedSystem
     {
@@ -83,9 +83,6 @@ namespace Client.SystemManage
             {
                 tickUpdateGroup = TickUpdateGroup.Instance;
             }
-
-             
-            
             
             if (started == AllManaged)
             {

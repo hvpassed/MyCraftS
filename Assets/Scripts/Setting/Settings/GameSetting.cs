@@ -10,5 +10,10 @@ namespace MyCraftS.Setting
         public uint Seed = 1;
 
         public float jumpHeight = 1.5f;
+
+        public string WorldName = "DefaultWorld";
+
+        public float SaveGap = 0.05f;
+
     }
 }

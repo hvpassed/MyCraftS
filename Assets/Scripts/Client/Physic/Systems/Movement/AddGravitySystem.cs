@@ -1,5 +1,4 @@
-﻿using Client.SystemManage;
-using MyCraftS.Physic.SystemGroups;
+﻿using MyCraftS.Physic.SystemGroups;
 using MyCraftS.Setting;
 using Unity.Burst;
 using Unity.Collections;
